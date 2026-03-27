@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laurel Studio — Therapist Routine</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#F5F2EC; --surface:#FAFAF7; --card:#fff;
+  --border:#E2DDD4; --accent:#7A9E7E; --accent2:#B8975A;
+  --text:#1C1A16; --muted:#8A7F6E; --danger:#C25F5F;
+  --success:#4CAF87;
+}
+body { background:var(--bg); font-family:'Noto Sans KR',sans-serif; color:var(--text); min-height:100vh; padding-bottom:60px; }
+
+/* 헤더 */
+.header { background:var(--text); padding:20px 20px 16px; text-align:center; position:sticky; top:0; z-index:50; }
+.header-label { font-size:9px; letter-spacing:4px; color:var(--accent); text-transform:uppercase; margin-bottom:4px; }
+.header-title { font-family:'Cormorant Garamond',serif; font-size:20px; font-style:italic; color:#F5F2EC; }
+.header-sub { font-size:10px; color:#7A8099; letter-spacing:1px; margin-top:2px; }
+
+/* 진행률 */
+.progress-wrap { background:var(--text); padding:0 20px 16px; }
+.progress-bar { height:3px; background:#2A2F45; border-radius:2px; }
+.progress-fill { height:100%; background:var(--accent); border-radius:2px; transition:width 0.4s; }
+.progress-text { font-size:11px; color:#7A8099; text-align:center; margin-top:6px; letter-spacing:1px; }
+
+/* 탭 */
+.tabs { display:flex; background:var(--surface); border-bottom:2px solid var(--border); position:sticky; top:72px; z-index:40; }
+.tab { flex:1; padding:12px 4px; text-align:center; font-size:11px; font-weight:500; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; letter-spacing:0.5px; transition:all 0.2s; }
+.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* 섹션 */
+.section { padding:16px 16px 0; }
+.section-header { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:6px; margin-bottom:10px; }
+.section-icon { font-size:18px; }
+.section-title-ko { font-size:13px; font-weight:500; color:var(--text); }
+.section-title-en { font-size:10px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:1px; }
+
+/* 체크 아이템 */
+.check-item { display:flex; align-items:flex-start; gap:12px; padding:12px 16px; background:var(--card); border:1px solid var(--border); border-radius:6px; margin-bottom:7px; cursor:pointer; transition:all 0.15s; }
+.check-item.done { background:#F0FBF5; border-color:#4CAF8740; }
+.check-item.done .item-ko { color:#4CAF87; text-decoration:line-through; }
+.check-item.done .item-en { color:#A0C4B0; }
+.checkbox { width:22px; height:22px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; transition:all 0.15s; margin-top:1px; }
+.check-item.done .checkbox { background:var(--success); border-color:var(--success); color:#fff; }
+.item-ko { font-size:13px; line-height:1.5; }
+.item-en { font-size:11px; color:var(--muted); margin-top:2px; line-height:1.4; font-style:italic; }
+.item-tip { font-size:11px; color:var(--accent2); margin-top:4px; padding:4px 8px; background:#B8975A10; border-radius:3px; border-left:2px solid var(--accent2); }
+
+/* 케어 버전 카드 */
+.care-version { background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:12px; overflow:hidden; }
+.care-version-header { padding:14px 16px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+.care-version-header:hover { background:#F5F2EC; }
+.care-badge { padding:3px 10px; border-radius:99px; font-size:10px; font-weight:500; letter-spacing:1px; }
+.care-version-title { font-size:13px; font-weight:500; }
+.care-version-en { font-size:10px; color:var(--muted); }
+.chevron { margin-left:auto; font-size:11px; color:var(--muted); transition:transform 0.2s; }
+.chevron.open { transform:rotate(180deg); }
+.care-version-body { display:none; padding:0 16px 16px; border-top:1px solid var(--border); }
+.care-version-body.open { display:block; }
+
+/* 시간 배지 */
+.time-badge { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--text); color:#C8A96E; border-radius:4px; font-size:12px; letter-spacing:2px; font-weight:500; margin:16px 0 10px; }
+
+/* 리셋 버튼 */
+.reset-btn { display:block; width:calc(100% - 32px); margin:20px 16px 0; padding:14px; background:transparent; border:1px solid var(--border); border-radius:6px; color:var(--muted); font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; font-family:'Noto Sans KR',sans-serif; }
+.reset-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+/* 회화카드 버튼 */
+.phrase-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:calc(100% - 32px); margin:12px 16px 0; padding:14px; background:var(--accent); color:#fff; border:none; border-radius:6px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; font-family:'Noto Sans KR',sans-serif; font-weight:500; text-decoration:none; }
+
+/* 구분선 */
+.divider { height:1px; background:var(--border); margin:16px; }
+
+.page { display:none; }
+.page.active { display:block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Laurel Studio · Staff Only</div>
+  <div class="header-title">Therapist Routine</div>
+  <div class="header-sub">테라피스트 근무 루틴</div>
+</div>
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="progress-text" id="progress-text">0 / 0 완료</div>
+</div>
+
+<!-- 탭 -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('open')">🌅 오픈</div>
+  <div class="tab" onclick="showTab('care')">✨ 케어</div>
+  <div class="tab" onclick="showTab('close')">🌙 마감</div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━ 오픈 탭 ━━━━━━━━━━━━━━ -->
+<div id="tab-open" class="page active">
+
+  <div class="section">
+    <div class="time-badge">⏰ 09:50 도착 · Arrive by 9:50 AM</div>
+
+    <!-- 환복 -->
+    <div class="section-header" style="background:#7A9E7E15;border:1px solid #7A9E7E30;border-radius:6px;">
+      <span class="section-icon">👘</span>
+      <div>
+        <div class="section-title-ko">1. 환복</div>
+        <div class="section-title-en">Get Changed</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">탈의 후 옷·가방·개인 용품 상자 안에 정리</div>
+        <div class="item-en">Store personal belongings in the box</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">근무복으로 환복</div>
+        <div class="item-en">Change into work uniform (Hanbok)</div>
+      </div>
+    </div>
+
+    <!-- 응대 준비 -->
+    <div class="section-header" style="background:#B8975A15;border:1px solid #B8975A30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">📋</span>
+      <div>
+        <div class="section-title-ko">2. 응대 준비</div>
+        <div class="section-title-en">Prepare for Guests</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">금일 예약 시간 · 인원 수 · 국적 확인</div>
+        <div class="item-en">Check today's bookings: time / headcount / nationality</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">일회용 젖은 해면 1인당 2장 준비</div>
+        <div class="item-en">Prepare 2 disposable wet sponges per person</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">화장품 및 도구 수량 확보</div>
+        <div class="item-en">Check and restock cosmetics & tools</div>
+      </div>
+    </div>
+
+    <!-- 오픈 준비 -->
+    <div class="section-header" style="background:#4A9EAF15;border:1px solid #4A9EAF30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">💡</span>
+      <div>
+        <div class="section-title-ko">3. 오픈 준비</div>
+        <div class="section-title-en">Open the Studio</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">메인 조명 ON</div>
+        <div class="item-en">Main lights ON</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">사이드 조명 1개 ON (인형 옆)</div>
+        <div class="item-en">Side lamp ON (next to the doll)</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">보일러 ON (가장 안쪽 1, 2번)</div>
+        <div class="item-en">Boiler ON (inner units 1 & 2)</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">라디에이터 ON</div>
+        <div class="item-en">Radiator ON</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">장판 예약 고객 수에 맞춰 ON (바깥쪽 1번 베드부터)</div>
+        <div class="item-en">Floor heating ON — match number of beds to bookings (start from outer bed)</div>
+        <div class="item-tip">💡 날씨·기온에 따라 조절하세요 · Adjust based on weather</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">향 · 라이터 준비</div>
+        <div class="item-en">Prepare incense & lighter</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">배경음악 ON (가야금산조)</div>
+        <div class="item-en">Background music ON (Gayageum Sanjo)</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetTab('open')">↺ 오픈 루틴 초기화 · Reset Open</button>
+  <a href="laurel_therapist_card.html" class="phrase-btn">💬 회화카드 열기 · Open Phrase Card</a>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━ 케어 탭 ━━━━━━━━━━━━━━ -->
+<div id="tab-care" class="page">
+
+  <div class="section">
+    <div class="time-badge">⏰ 10:00 고객 응대 시작 · Guest Check-in Starts</div>
+
+    <!-- 예약자 확인 -->
+    <div class="section-header" style="background:#7A9E7E15;border:1px solid #7A9E7E30;border-radius:6px;">
+      <span class="section-icon">✅</span>
+      <div>
+        <div class="section-title-ko">1. 예약자 확인</div>
+        <div class="section-title-en">Guest Check-in</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">예약 플랫폼 · 성함 · 인원 · 프로그램 · 국적 확인</div>
+        <div class="item-en">Confirm: platform / name / headcount / program / nationality</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">체크리스트 내용 확인</div>
+        <div class="item-en">Review guest checklist form</div>
+      </div>
+    </div>
+
+    <!-- 케어 대기 -->
+    <div class="section-header" style="background:#B8975A15;border:1px solid #B8975A30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">🛏</span>
+      <div>
+        <div class="section-title-ko">2. 케어 대기</div>
+        <div class="section-title-en">Settle Guest</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">신발 벗도록 안내</div>
+        <div class="item-en">"Take off your shoes" 테이크 오프 유어 슈즈</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">1팀: 베드 1번(바깥쪽) / 2팀 이상: 가장 안쪽부터</div>
+        <div class="item-en">1 guest: outer bed #1 / 2+ guests: start from innermost bed</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">눕히기 안내</div>
+        <div class="item-en">"Lie down" 라이 다운</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">담요 덮어드리기</div>
+        <div class="item-en">Cover with blanket</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">소지품(안경·핸드폰 등) 베개 옆 소쿠리에 담기</div>
+        <div class="item-en">Place small items (glasses, phone) in the basket beside the pillow</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">향 피우기</div>
+        <div class="item-en">Light the incense</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">외국인 케어 방 메인 조명 OFF</div>
+        <div class="item-en">Turn off main lights in the treatment room</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">웰컴 가이드 재생 (국적에 맞게)</div>
+        <div class="item-en">Play welcome audio guide (match guest's nationality)</div>
+      </div>
+    </div>
+
+    <!-- 딥 클렌징 -->
+    <div class="section-header" style="background:#4A9EAF15;border:1px solid #4A9EAF30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">🫧</span>
+      <div>
+        <div class="section-title-ko">3. 딥 클렌징 & 각질 정리</div>
+        <div class="section-title-en">Deep Cleansing & Exfoliation</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">클렌징 밀크 1펌프 러빙 (선크림·메이크업 한 경우)</div>
+        <div class="item-en">Cleansing milk 1 pump — massage gently (if sunscreen/makeup applied)</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">일회용 젖은 해면 2번 닦아내기</div>
+        <div class="item-en">Remove with 2 disposable wet sponge wipes</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">PHA 화장솜 밖→안으로 닦기</div>
+        <div class="item-en">PHA cotton pad — wipe outward to inward</div>
+        <div class="item-tip">💡 연하거나 민감피부는 바깥쪽만 or 생략 가능</div>
+      </div>
+    </div>
+
+    <!-- 수분 팩 -->
+    <div class="section-header" style="background:#7A9E7E15;border:1px solid #7A9E7E30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">💧</span>
+      <div>
+        <div class="section-title-ko">4. 급속 수분 젤리 충전 팩</div>
+        <div class="section-title-en">Hydration Jelly Pack</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">작은 그릇에 팩 3스쿱 덜기</div>
+        <div class="item-en">Scoop 3 portions of pack into a small bowl</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">얼굴 전체 도포 (트러블 부위는 마지막에, 팩제 덮을 것)</div>
+        <div class="item-en">Apply all over face — apply to troubled areas last, cover fully</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">화장솜 눈 위 + 눈가리는 안경 올리기</div>
+        <div class="item-en">Cotton pad on eyes + eye shield on top</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">LED 붉은색 10~15분 흡수</div>
+        <div class="item-en">Red LED light — 10~15 min absorption</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">아로마 오일 미스트 뿌리기</div>
+        <div class="item-en">Spray aroma oil mist</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">아로마 오일 귀 밑 림프 마사지</div>
+        <div class="item-en">Aroma oil lymph massage — below the ears</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div>
+        <div class="item-ko">루틴지 + 편지 봉투 준비, 고객 이름 한글 기입</div>
+        <div class="item-en">Prepare routine card + envelope, write guest name in Korean</div>
+      </div>
+    </div>
+
+    <!-- 케어 버전 -->
+    <div class="section-header" style="background:#C25F5F15;border:1px solid #C25F5F30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">⚗️</span>
+      <div>
+        <div class="section-title-ko">5. 케어 버전 선택</div>
+        <div class="section-title-en">Select Care Version</div>
+      </div>
+    </div>
+
+    <!-- Basic -->
+    <div class="care-version">
+      <div class="care-version-header" onclick="toggleCare(this)">
+        <span class="care-badge" style="background:#4A9EAF20;color:#4A9EAF">BASIC</span>
+        <div>
+          <div class="care-version-title">베이직 버전</div>
+          <div class="care-version-en">Basic Skincare Care</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="care-version-body">
+        <div class="check-item" onclick="toggle(this)" style="margin-top:10px">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">일회용 젖은 해면 2번 닦기</div><div class="item-en">Wipe with 2 wet sponges</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜에 스킨 적셔 얼굴 전체 닦기</div><div class="item-en">Cotton pad with toner — wipe entire face</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">액티베이션 크림 검지 한마디 러빙</div><div class="item-en">Activation cream — 1 finger-knuckle, massage in</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">캐비어 크림 검지 한마디 러빙</div><div class="item-en">Caviar cream — 1 finger-knuckle, massage in</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">AC 컨트롤 앰플(흰색) 얼굴 전체 러빙</div><div class="item-en">AC Control Ampoule (white) — massage all over face</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜 눈에 덮기</div><div class="item-en">Cover eyes with cotton pads</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">모델링 팩 (입가 제외)</div><div class="item-en">Modeling pack — avoid around the mouth</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium 안티에이징 -->
+    <div class="care-version">
+      <div class="care-version-header" onclick="toggleCare(this)">
+        <span class="care-badge" style="background:#C8A96E20;color:#B8975A">PREMIUM</span>
+        <div>
+          <div class="care-version-title">프리미엄 — 안티에이징 케어</div>
+          <div class="care-version-en">Anti-Aging Care</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="care-version-body">
+        <div class="check-item" onclick="toggle(this)" style="margin-top:10px">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">일회용 젖은 해면 2번 닦기</div><div class="item-en">Wipe with 2 wet sponges</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜에 스킨 적셔 얼굴 전체 닦기</div><div class="item-en">Cotton pad with toner — wipe entire face</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">엑소 필라젠 크림 얼굴 전체 도포</div><div class="item-en">Exo Phylagen cream — apply all over face</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">디바이스 전원 길게 눌러 ON → 2번 눌러 GLOW 모드</div><div class="item-en">Long press to power ON → press twice for GLOW mode</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">아이패치 눈가 각 1장씩 (선택)</div><div class="item-en">Eye patches — 1 per eye (optional)</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">부스터 밤 — 이마·팔자에 면봉으로 덜어 바르기</div><div class="item-en">Booster balm — apply with cotton swab to forehead & nasolabial folds</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜 눈에 덮기</div><div class="item-en">Cover eyes with cotton pads</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">모델링 팩 (입가 제외)</div><div class="item-en">Modeling pack — avoid around the mouth</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium 홍조 -->
+    <div class="care-version">
+      <div class="care-version-header" onclick="toggleCare(this)">
+        <span class="care-badge" style="background:#E07B4F20;color:#E07B4F">PREMIUM</span>
+        <div>
+          <div class="care-version-title">프리미엄 — 홍조 케어</div>
+          <div class="care-version-en">Redness Care</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="care-version-body">
+        <div class="check-item" onclick="toggle(this)" style="margin-top:10px">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">일회용 젖은 해면 2번 닦기</div><div class="item-en">Wipe with 2 wet sponges</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜에 스킨 적셔 얼굴 전체 닦기</div><div class="item-en">Cotton pad with toner — wipe entire face</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">스킨+아쥴렌 앰플 버블팩 — 홍조 부위에 도포</div><div class="item-en">Toner + Azulene ampoule bubble pack — apply to redness areas</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">액티베이션 크림 검지 한마디 러빙</div><div class="item-en">Activation cream — 1 finger-knuckle, massage in</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">캐비어 크림 검지 한마디 러빙</div><div class="item-en">Caviar cream — 1 finger-knuckle, massage in</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">아쥴렌 앰플 얼굴 전체 러빙</div><div class="item-en">Azulene ampoule — massage all over face</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜 눈에 덮기</div><div class="item-en">Cover eyes with cotton pads</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">모델링 팩 (입가 제외)</div><div class="item-en">Modeling pack — avoid around the mouth</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium 트러블/남성 -->
+    <div class="care-version">
+      <div class="care-version-header" onclick="toggleCare(this)">
+        <span class="care-badge" style="background:#C25F5F20;color:#C25F5F">PREMIUM</span>
+        <div>
+          <div class="care-version-title">프리미엄 — 트러블 / 남성 케어</div>
+          <div class="care-version-en">Acne / Men's Care</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="care-version-body">
+        <div class="check-item" onclick="toggle(this)" style="margin-top:10px">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">일회용 젖은 해면 2번 닦기</div><div class="item-en">Wipe with 2 wet sponges</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜에 스킨 적셔 얼굴 전체 닦기</div><div class="item-en">Cotton pad with toner — wipe entire face</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">액티베이션 크림 검지 한마디 러빙</div><div class="item-en">Activation cream — 1 finger-knuckle, massage in</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">캐비어 크림 검지 한마디 러빙</div><div class="item-en">Caviar cream — 1 finger-knuckle, massage in</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div>
+            <div class="item-ko">트러블엔 흰색 앰플 / 수염엔 토닉 뿌려 클렌징솔 러빙</div>
+            <div class="item-en">Acne: white ampoule / Beard area: tonic + cleansing brush</div>
+            <div class="item-tip">💡 약한 피부는 생략 · Skip for sensitive skin</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">화장솜 눈에 덮기</div><div class="item-en">Cover eyes with cotton pads</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="checkbox"></div>
+          <div><div class="item-ko">모델링 팩 (입가 제외)</div><div class="item-en">Modeling pack — avoid around the mouth</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 피니쉬 터치 -->
+    <div class="section-header" style="background:#7A9E7E15;border:1px solid #7A9E7E30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">✨</span>
+      <div>
+        <div class="section-title-ko">6. 피니쉬 터치</div>
+        <div class="section-title-en">Finish Touch</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">모델링 팩 떼기</div><div class="item-en">Remove modeling pack</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">젖은 일회용 해면으로 팩 잔여물 닦기</div><div class="item-en">Wipe off residue with wet sponge</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">시카 크림 딱풀 바르듯 → 셀 메모리 크림 바르기</div><div class="item-en">Cica cream (glue-stick motion) → Cell Memory cream</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">부스터 젤 얼굴 전체 바르기</div><div class="item-en">Booster gel — apply all over face</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">고객 의향 확인 후 선크림 바르기</div><div class="item-en">Apply sunscreen if guest requests</div></div>
+    </div>
+
+    <!-- 마무리 -->
+    <div class="section-header" style="background:#B8975A15;border:1px solid #B8975A30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">📝</span>
+      <div>
+        <div class="section-title-ko">7. 마무리</div>
+        <div class="section-title-en">Wrap Up</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">루틴지 전달</div><div class="item-en">Hand over routine card</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">추천 제품 안내 (아토베리어 365 크림)</div><div class="item-en">Recommend product: Atobarrier 365 Cream</div></div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetTab('care')">↺ 케어 루틴 초기화 · Reset Care</button>
+  <a href="laurel_therapist_card.html" class="phrase-btn">💬 회화카드 열기 · Open Phrase Card</a>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━ 마감 탭 ━━━━━━━━━━━━━━ -->
+<div id="tab-close" class="page">
+
+  <div class="section">
+    <div class="time-badge">⏰ 17:00 마감 · End of Day</div>
+
+    <!-- 케어 방 정리 -->
+    <div class="section-header" style="background:#4A9EAF15;border:1px solid #4A9EAF30;border-radius:6px;">
+      <span class="section-icon">🏮</span>
+      <div>
+        <div class="section-title-ko">1. 케어 방 정리</div>
+        <div class="section-title-en">Treatment Room Shutdown</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">메인 조명 OFF</div><div class="item-en">Main lights OFF</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">배경음악 OFF</div><div class="item-en">Background music OFF</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">아이패드·갤럭시탭 충전 (포트기 옆)</div><div class="item-en">Charge iPad & Galaxy Tab (next to port hub)</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">보일러 OFF</div><div class="item-en">Boiler OFF</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">라디에이터 OFF</div><div class="item-en">Radiator OFF</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">장판 전체 OFF</div><div class="item-en">Floor heating OFF (all)</div></div>
+    </div>
+
+    <!-- 베드 정리 -->
+    <div class="section-header" style="background:#7A9E7E15;border:1px solid #7A9E7E30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">🛏</span>
+      <div>
+        <div class="section-title-ko">2. 베드 정리</div>
+        <div class="section-title-en">Bed Cleanup</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">담요 정리</div><div class="item-en">Fold and store blankets</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">베드 먼지·이물질 닦기 (냉장고 위 도구 사용)</div><div class="item-en">Wipe down bed surface (use tool on top of fridge)</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">섬유탈취제 뿌리기 (냉장고 위)</div><div class="item-en">Spray fabric freshener (on top of fridge)</div></div>
+    </div>
+
+    <!-- 쓰레기 정리 -->
+    <div class="section-header" style="background:#B8975A15;border:1px solid #B8975A30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">🧹</span>
+      <div>
+        <div class="section-title-ko">3. 쓰레기 & 도구 정리</div>
+        <div class="section-title-en">Trash & Tools</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">향 받침대 닦기</div><div class="item-en">Wipe incense holder</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">고무볼·스파츌라 닦기 (알딱 정리 후 치우기)</div><div class="item-en">Clean rubber bowl & spatula — dry and store properly</div></div>
+    </div>
+
+    <!-- 케어 기록 -->
+    <div class="section-header" style="background:#C25F5F15;border:1px solid #C25F5F30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">📊</span>
+      <div>
+        <div class="section-title-ko">4. 케어 기록 작성</div>
+        <div class="section-title-en">Record Today's Care</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">케어 전 체크리스트 내용 반영</div><div class="item-en">Reflect pre-care checklist notes</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">케어 중 고객 상태 반영</div><div class="item-en">Note guest skin condition during treatment</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">케어 후 고객 반응 반영</div><div class="item-en">Record guest feedback after treatment</div></div>
+    </div>
+
+    <!-- 환복 -->
+    <div class="section-header" style="background:#7A9E7E15;border:1px solid #7A9E7E30;border-radius:6px;margin-top:8px;">
+      <span class="section-icon">👘</span>
+      <div>
+        <div class="section-title-ko">5. 환복</div>
+        <div class="section-title-en">Change Out</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <div class="checkbox"></div>
+      <div><div class="item-ko">근무복 탈의 후 상자 안에 정리</div><div class="item-en">Remove uniform and store neatly in box</div></div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetTab('close')">↺ 마감 루틴 초기화 · Reset Close</button>
+  <a href="laurel_therapist_card.html" class="phrase-btn">💬 회화카드 열기 · Open Phrase Card</a>
+  <div style="height:24px"></div>
+</div>
+
+<script>
+let currentTab = 'open';
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const tabs = ['open','care','close'];
+  document.querySelectorAll('.tab')[tabs.indexOf(tab)].classList.add('active');
+  updateProgress();
+}
+
+function toggle(el) {
+  el.classList.toggle('done');
+  if (el.classList.contains('done')) {
+    el.querySelector('.checkbox').textContent = '✓';
+  } else {
+    el.querySelector('.checkbox').textContent = '';
+  }
+  updateProgress();
+}
+
+function toggleCare(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+function updateProgress() {
+  const activeTab = document.getElementById('tab-' + currentTab);
+  const all = activeTab.querySelectorAll('.check-item');
+  const done = activeTab.querySelectorAll('.check-item.done');
+  const pct = all.length > 0 ? Math.round(done.length / all.length * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${done.length} / ${all.length} 완료 · ${pct}%`;
+}
+
+function resetTab(tab) {
+  const t = document.getElementById('tab-' + tab);
+  t.querySelectorAll('.check-item').forEach(el => {
+    el.classList.remove('done');
+    el.querySelector('.checkbox').textContent = '';
+  });
+  updateProgress();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
