@@ -6,7 +6,7 @@
 <title>Laurel Studio — 테라피스트 루틴</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;600&display=swap');
-  :root{--bg:#FAF9F6;--card:#fff;--border:#EBE8E2;--dark:#1C1917;--muted:#8A8278;--accent:#7c6fa0;--green:#3D7A52;--green-bg:#E8F5EE;--coral:#B85450;--coral-bg:#FBEAE9;--gold:#B8860B;--gold-bg:#FEF8E0;--guest:#4a40a0;--guest-bg:#EEEDF8;--close-bg:#FDF0E0;--close:#8A5A10;--tip-bg:#F8F6EF;--blue:#2A5FA8;--season-summer:#2D8DB5;--season-summer-bg:#E6F4FA;--season-winter:#6B7FA0;--season-winter-bg:#EEF1F6}
+  :root{--bg:#FAF9F6;--card:#fff;--border:#EBE8E2;--dark:#1C1917;--muted:#8A8278;--accent:#7c6fa0;--green:#3D7A52;--green-bg:#E8F5EE;--coral:#B85450;--coral-bg:#FBEAE9;--gold:#B8860B;--gold-bg:#FEF8E0;--guest:#4a40a0;--guest-bg:#EEEDF8;--close-bg:#FDF0E0;--close:#8A5A10;--tip-bg:#F8F6EF;--blue:#2A5FA8;--season-summer:#2D8DB5;--season-summer-bg:#E6F4FA;--season-winter:#6B7FA0;--season-winter-bg:#EEF1F6;--body:#2A7B8C;--body-bg:#E4F2F5}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;padding:0 0 80px}
   .w{max-width:520px;margin:0 auto;padding:0 16px}
@@ -29,6 +29,7 @@
   .phase-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;font-size:13px;font-weight:600}
   .ph-open{background:var(--green-bg);color:var(--green)}
   .ph-care{background:var(--guest-bg);color:var(--guest)}
+  .ph-body{background:var(--body-bg);color:var(--body)}
   .ph-close{background:var(--close-bg);color:var(--close)}
   .note{font-size:11px;color:var(--muted);padding:6px 16px 8px;background:var(--tip-bg);border-bottom:1px solid var(--border);line-height:1.6;font-style:italic}
   .sec-hd{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--muted);padding:8px 16px 6px;background:#FAF9F6;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -47,16 +48,25 @@
   .en-line{font-size:11px;color:var(--blue);margin-top:4px;line-height:1.5}
   .pron{font-size:11px;color:#9B8FCB;margin-top:1px;line-height:1.5;font-style:italic}
   .badge{display:inline-block;font-size:10px;font-weight:500;background:var(--coral-bg);color:var(--coral);border-radius:999px;padding:1px 8px;margin-left:4px}
+  .badge-body{background:var(--body-bg);color:var(--body)}
   .season-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;border-radius:999px;padding:2px 8px;margin-left:4px}
   .st-summer{background:var(--season-summer-bg);color:var(--season-summer)}
   .st-winter{background:var(--season-winter-bg);color:var(--season-winter)}
   .mind-card{background:#F8F6F0;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 16px 10px;font-size:11px;color:#6B5D3F;line-height:1.65}
   .mind-card strong{color:var(--gold);font-weight:600}
+  .safe-card{background:var(--coral-bg);border-left:3px solid var(--coral);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 16px 10px;font-size:11px;color:#7A3330;line-height:1.7}
+  .safe-card strong{color:var(--coral);font-weight:600}
+  .safe-card .sc-list{margin-top:5px}
+  .safe-card .sc-list span{display:inline-block;width:16px;color:var(--coral);font-weight:600}
   .step-card{background:#FAFAFF;border:1px solid #E8E6F4;border-radius:10px;padding:12px 14px;margin:8px 16px 10px;font-size:12px;color:var(--dark);line-height:1.7}
   .step-card .sc-title{font-size:11px;font-weight:600;color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
   .step-card .sc-row{margin-bottom:4px}
   .step-card .sc-num{display:inline-block;width:18px;font-weight:600;color:var(--accent);font-size:11px}
   .step-card .sc-warn{color:var(--coral);font-size:10px;font-weight:500}
+  .time-card{background:#F0F7F8;border:1px solid #D6E8EB;border-radius:10px;padding:12px 14px;margin:8px 16px 10px;font-size:12px;color:var(--dark);line-height:1.85}
+  .time-card .tc-title{font-size:11px;font-weight:600;color:var(--body);margin-bottom:6px;letter-spacing:.04em}
+  .time-card .tc-t{display:inline-block;min-width:52px;font-weight:600;color:var(--body);font-size:11px}
+  .warn-txt{color:var(--coral);font-size:10px;font-weight:500}
   .svg-ck{width:10px;height:8px}
   .ck-svg{width:10px;height:8px}
 </style>
@@ -80,7 +90,8 @@
 
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('open',this)">🌿 오픈</button>
-    <button class="tab-btn" onclick="showTab('care',this)">🤍 케어</button>
+    <button class="tab-btn" onclick="showTab('care',this)">🤍 페이셜</button>
+    <button class="tab-btn" onclick="showTab('body',this)">💆 바디</button>
     <button class="tab-btn" onclick="showTab('close',this)">🌙 마감</button>
   </div>
 
@@ -100,19 +111,26 @@
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">조명 모두 켜기 (메인 + 간접)</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">환기 (창문 열기)</div></div></div>
 
-      <div class="sec-hd">외국인 케어 방 — <span class="season-tag st-winter">❄️ 겨울</span></div>
+      <div class="sec-hd">3층 페이셜 방 — <span class="season-tag st-winter">❄️ 겨울</span></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">보일러 켜기 (1번, 2번)</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">라디에이터 켜기</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">장판 켜기 (예약 고객 수에 맞춰)</div></div></div>
 
-      <div class="sec-hd">외국인 케어 방 — <span class="season-tag st-summer">☀️ 여름</span></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">창문형 에어컨 켜기 (20~23도)</div><div class="sub">날개 왼쪽 + 4·3번 커튼 조금 열기<br><span style="color:var(--coral);font-size:10px">⚠ 커튼 닫으면 바깥쪽 안 시원해지고 4번만 추워짐</span></div></div></div>
+      <div class="sec-hd">3층 페이셜 방 — <span class="season-tag st-summer">☀️ 여름</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">창문형 에어컨 켜기 (20~23도)</div><div class="sub">날개 왼쪽 + 4·3번 커튼 조금 열기<br><span class="warn-txt">⚠ 커튼 닫으면 바깥쪽 안 시원해지고 4번만 추워짐</span></div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">다이슨 선풍기 1단 — 유리문 방면 회전</div><div class="sub">1·2번 베드 손님께 바람이 가도록</div></div></div>
 
-      <div class="sec-hd">외국인 케어 방 — 공통</div>
+      <div class="sec-hd">3층 페이셜 방 — 공통</div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향 + 라이터 준비</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">배경음악 켜기 (가야금 산조)</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">해면을 넉넉히 물에 적셔 준비</div></div></div>
+
+      <div class="sec-hd">4층 바디케어 방 <span class="badge badge-body">바디 예약 있는 날</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 전원 ON + 표면 소독 + 정상 작동 확인</div><div class="sub">코스 세팅 화면 준비</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">온열 도기 예열 (복부용)</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">가운·수건·사물함 키 재고 확인</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">냉장고에 수분팩 시원하게 넣기 + 실리콘 마스크 소독</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향(동백·편백) 디퓨징 + 음악 + 조도 다운</div><div class="sub">"리트리트" 느낌 통일</div></div></div>
 
       <div class="sec-hd">내국인 방 <span class="badge">예약 있을 때만</span></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">내국인 방 오픈 준비</div><div class="sub"><span class="season-tag st-summer" style="margin:0">☀️ 여름</span> 에어컨 + 선풍기 + 서큘레이터 세팅</div></div></div>
@@ -125,10 +143,10 @@
     </div>
   </div>
 
-  <!-- ═══════ CARE ═══════ -->
+  <!-- ═══════ CARE (페이셜) ═══════ -->
   <div class="tab-panel" id="tab-care">
     <div class="phase">
-      <div class="phase-hd ph-care"><span>🤍 케어 진행</span></div>
+      <div class="phase-hd ph-care"><span>🤍 페이셜 케어</span><span style="font-size:11px;font-weight:400;opacity:.7">3층 · 시그니처</span></div>
 
       <div class="mind-card"><strong>🌸 마인드셋</strong> — 친절하지만 그 존재만으로 빛나는 일본 료칸의 여주인. 나에게 시간이 유한한 것처럼 고객의 시간도 유한하다. 에너지를 잘 나누어 공평하게.</div>
 
@@ -170,7 +188,7 @@
 
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
         <div class="lbl">PHA 3번 톡톡톡 → 화장솜 닦기</div>
-        <div class="sub">바깥 라인: 밖→안 / 중심부: 안→밖<br><span style="color:var(--coral);font-size:10px">⚠ 민감·홍조 피부는 하지 않거나 턱 바깥라인만 살짝</span></div>
+        <div class="sub">바깥 라인: 밖→안 / 중심부: 안→밖<br><span class="warn-txt">⚠ 민감·홍조 피부는 하지 않거나 턱 바깥라인만 살짝</span></div>
       </div></div>
 
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
@@ -299,13 +317,144 @@
     </div>
   </div>
 
+  <!-- ═══════ BODY (바디케어) ═══════ -->
+  <div class="tab-panel" id="tab-body">
+    <div class="phase">
+      <div class="phase-hd ph-body"><span>💆 퍼스널 바디 앤 스킨 케어</span><span style="font-size:11px;font-weight:400;opacity:.7">4층 · 90분</span></div>
+
+      <div class="mind-card" style="border-left-color:var(--body);background:var(--body-bg);color:#1F5A66"><strong style="color:var(--body)">🌊 핵심 원칙</strong> — 90분은 <b>입장부터 마무리까지 전체 경험</b> (손 케어 시간만이 아님). <b>전신 마사지가 아니라</b> 피부·컨디션 케어 — 멘트에서 "massage" 대신 <b>care · drainage · circulation</b>. 1타임 최대 2인, 하루 3타임. 서두르지 않는다. 세라젬은 인증 의료기기 — 온열·순환은 기기가, 데콜테·얼굴은 테라피스트가.</div>
+
+      <div class="sec-hd">사전 준비 <span class="badge badge-body">세션 전</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">3층 — 차, 바디 체크리스트+펜</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">3층 — 오일 3종 테스터 + 시트마스크 3종</div><div class="sub">제주 동백 · 장흥 편백 · 지리산 달맞이</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">4층 — 세라젬 소독·작동 확인, 코스 화면 준비</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">4층 — 가운·수건·사물함 키 / 에어셀 위생 커버 교체</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">4층 — 온열 도기 예열 + 페이스 제품 세팅</div><div class="sub">클렌저 / PHA / 옥시젠 버블팩+붓 / 토너 / 시카밤 / 셀메모리 아쥴렌 앰플 / 선크림</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">4층 — 냉장고 수분팩·소독한 실리콘 마스크 / LED / 해면 / 호출용 종</div></div></div>
+
+      <div class="sec-hd">① 안전 사전 확인 <span class="badge">★필수</span></div>
+      <div class="safe-card"><strong>⚠ 세라젬 온열·공기압 금기 항목</strong> — 3층 체크리스트 작성 시 <b>반드시 구두 확인</b>. 해당되면 강도·온도를 낮추거나 일부 단계를 생략한다.
+        <div class="sc-list">
+          <span>·</span> 임신 / 임신 가능성<br>
+          <span>·</span> 최근 수술·시술(레이저·필링 등) 이력<br>
+          <span>·</span> 심장 질환 · 페이스메이커 · 조절 안 되는 고혈압<br>
+          <span>·</span> 급성 염증 · 발열 · 혈전 관련 병력<br>
+          <span>·</span> 당일 음주<br>
+          <span>·</span> PHA · 특정 오일 알러지/민감
+        </div>
+      </div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">게스트에게 안전 항목 구두 확인</div>
+        <div class="en-line">"Before we begin — any recent surgery, pregnancy, heart condition, or allergies we should know about? It helps us adjust the warmth and pressure for you."</div>
+        <div class="sub">시작 전 — 최근 수술·임신·심장 질환·알러지 있으신지 확인. 온도와 압을 맞춰드리기 위함.</div>
+      </div></div>
+
+      <div class="sec-hd">② 3층 웰컴 & 준비 <span class="badge badge-body">~15분</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">웰컴 인사 + 따뜻한 차 제공, 편하게 앉도록 안내</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">바디케어 체크리스트 작성 (안전 항목 포함)</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">오일 3종 중 1 선택 (향·효능 간단 설명)</div>
+        <div class="sub">제주 붉은 동백(깊은 보습) · 장흥 편백(진정·삼림) · 지리산 달맞이(장벽)</div>
+      </div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">시트마스크 3종 중 1 선택</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 다녀오도록 안내 <span class="warn-txt">(케어 중 중단 방지)</span></div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">4층으로 이동 안내</div>
+        <div class="en-line">"Today is a 90-minute journey. We'll start with tea and a quick skin check here, then move upstairs for your body and facial care. First, pick one oil and one sheet mask — and please use the restroom before we go up."</div>
+        <div class="sub">오늘은 90분 여정 — 여기서 차·피부 체크 후 위층에서 바디·페이셜 케어. 먼저 오일·마스크 하나씩 고르고, 올라가기 전 화장실 이용.</div>
+      </div></div>
+
+      <div class="sec-hd">③ 4층 세팅 & 눕기 <span class="badge badge-body">~5분</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">세라젬 눕는 법 안내 <span class="badge">★핵심</span></div>
+        <div class="sub"><span class="warn-txt">머리 쪽에서 바로 눕지 말 것.</span> 다리 쪽 벤치에 먼저 앉은 뒤 → 머리 방향으로 미끄러지듯 올라가 눕기 (기기 잔고장 방지 — 반드시 시연/안내)</div>
+      </div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">가운(원피스형) 환복 안내 → 테라피스트 밖에서 대기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">준비되면 종 흔들거나 부르도록 안내</div>
+        <div class="en-line">"Please change into this gown. To lie down, sit on the bench at the foot of the bed first, then slide up toward the head. I'll step out; ring this bell when you're ready — and anytime if the warmth or pressure feels too strong."</div>
+        <div class="sub">가운으로 갈아입고, 다리 쪽 벤치에 먼저 앉아 머리 쪽으로 미끄러져 눕기. 준비되면 종 울리기 / 온도·압 강하면 언제든 종.</div>
+      </div></div>
+
+      <div class="sec-hd">④ 바디 시작 <span class="badge badge-body">0~18분</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">다리 공기압(에어셀) 18분 — 발끝→허벅지 순환</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">온열 도기 복부에 올리기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 바디 코스 작동</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">1차 컴포트 체크 <span class="badge">★별점 예방</span></div>
+        <div class="en-line">"Is the warmth and the leg pressure comfortable? I can adjust anytime."</div>
+        <div class="pron">이즈 더 웜스 앤드 더 레그 프레셔 컴포터블? 아이 캔 어드저스트 애니타임.</div>
+      </div></div>
+
+      <div class="sec-hd">⑤ 페이스 (바디와 동시)</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">클렌징</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">PHA 진행 <span class="warn-txt">(민감 시 시간 단축)</span></div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">옥시젠 버블팩 붓으로 도포</div></div></div>
+
+      <div class="sec-hd">⑥ 데콜테 <span class="badge badge-body">5~10분</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">게스트가 고른 오일로 목·귀 옆 림프 드레이니지</div>
+        <div class="sub">목·귀 옆 림프선 라인 따라 스트레칭 + 드레이니지<br><span class="warn-txt">⚠ 멘트에서 "massage" 대신 "drainage / release" 사용</span></div>
+      </div></div>
+
+      <div class="sec-hd">⑦ 마스크 & LED</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">얼굴에 버블팩 한 번 더 러빙</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고른 시트마스크를 얼굴에 올리기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">LED 올리기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">1시간 코스 선택 → 종 흔들면 압·온도 조절 안내</div></div></div>
+
+      <div class="sec-hd">⑧ 중반 <span class="badge badge-body">~30분 경과</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">페이스 일회용 해면으로 깨끗이 닦기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">시원한 수분팩 올리기 → 그 위에 실리콘 마스크</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">2차 컴포트 체크 <span class="badge">★별점 예방</span></div>
+        <div class="sub">세라젬 잔여 시간 / 온도 확인</div>
+      </div></div>
+
+      <div class="sec-hd">⑨ 마무리 <span class="badge badge-body">~5~7분</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">기기 정리 + 추가 페이스 마무리</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">토너로 닦기 → 시카밤 → 셀메모리 아쥴렌 앰플</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">선크림 여부 확인 후 도포</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">천천히 일어나도록 안내 <span class="warn-txt">(온열 후 어지럼 방지)</span> + 물/차 권유</div>
+        <div class="en-line">"Take your time getting up. Would you like some water? We finished with a soothing balm and azulene ampoule — your skin may look a little flushed, that's normal and settles soon."</div>
+        <div class="sub">천천히 일어나기. 물 드릴까요? 진정 밤·아쥴렌 앰플로 마무리 — 약간 붉은 건 정상이고 곧 가라앉음.</div>
+      </div></div>
+
+      <div class="sec-hd">⑩ 종료 후</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">개인 맞춤 1개월 스킨케어 루틴 이메일(PDF) 발송</div><div class="sub">인쇄물 아님 — 채널 안내와 동일</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">(선택) 방문 후 자동 리뷰 초대 안내</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">laurel-care에 사용 오일·마스크·특이반응 기록</div>
+        <div class="sub">재방문 시 이어서 케어</div>
+      </div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div>
+        <div class="lbl">위생 턴오버</div>
+        <div class="sub">세라젬 소독 · 린넨/수건 교체 · 공기압 커버 교체 · 실리콘 마스크 세척 · 해면 폐기 · 종 소독</div>
+      </div></div>
+
+      <div class="time-card">
+        <div class="tc-title">⏱ 타임키핑 카드 (벽시계 기준)</div>
+        <div><span class="tc-t">~15분</span> 차·체크리스트·오일/마스크 선택·화장실</div>
+        <div><span class="tc-t">~20분</span> 4층 환복·눕기</div>
+        <div><span class="tc-t">18분</span> 공기압 종료</div>
+        <div><span class="tc-t">~50분</span> 세라젬+페이스·데콜테·시트마스크·LED</div>
+        <div><span class="tc-t">30분</span> 해면 클렌징 → 수분팩·실리콘 마스크</div>
+        <div><span class="tc-t">75분</span> 마무리 시작 (토너·시카밤·앰플·선크림)</div>
+        <div><span class="tc-t">90분</span> 종료</div>
+      </div>
+
+      <div class="mind-card"><strong>💬 마무리 멘트</strong> — "오늘 림프 순환 위주로 풀어드렸어요. 밤에 물 많이 드시고 푹 주무시면 더 좋아요" 식으로 케어 가치를 말로 마무리. (만족도↑ · 후기↑)</div>
+    </div>
+  </div>
+
   <!-- ═══════ CLOSE ═══════ -->
   <div class="tab-panel" id="tab-close">
     <div class="phase">
       <div class="phase-hd ph-close"><span>🌙 마감 정리</span></div>
       <div class="note">* 고객 나간 후 베드 정리를 신속하게. 먼지, 머리카락 제거, 눌린 자국 평평하게, 베드 무새 정리.</div>
 
-      <div class="sec-hd">케어 방 정리</div>
+      <div class="sec-hd">3층 페이셜 방 정리</div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">담요 정리</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">베드 먼지·머리카락 제거 + 눌린 자국 정리</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">섬유탈취제 뿌리기</div></div></div>
@@ -313,11 +462,19 @@
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향 받침대 닦기</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고무볼 + 스파튤라 닦기</div></div></div>
 
+      <div class="sec-hd">4층 바디케어 위생 턴오버 <span class="badge badge-body">바디 진행한 날</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 표면 소독</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">린넨·수건 교체</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">공기압(에어셀) 위생 커버 교체</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">실리콘 마스크 세척 + 해면 폐기 + 종 소독</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">온열 도기·기기 전원 OFF + 오일 테스터 정리</div></div></div>
+
       <div class="sec-hd">전원 OFF</div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">배경음악 끄기</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">보일러 / 라디에이터 / 냉방기기 OFF</div><div class="sub"><span style="color:var(--coral);font-size:10px">⚠ 오래된 건물 — 전압 약해 정전 위험. 반드시 확인</span></div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">보일러 / 라디에이터 / 냉방기기 OFF</div><div class="sub"><span class="warn-txt">⚠ 오래된 건물 — 전압 약해 정전 위험. 반드시 확인</span></div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">장판 끄기</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">포트기 코드 뽑기</div><div class="sub"><span style="color:var(--coral);font-size:10px">⚠ 화재 원인 — 반드시 뽑을 것!</span></div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 전원 OFF</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">포트기 코드 뽑기</div><div class="sub"><span class="warn-txt">⚠ 화재 원인 — 반드시 뽑을 것!</span></div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">모든 조명 OFF</div></div></div>
 
       <div class="sec-hd">마무리</div>
