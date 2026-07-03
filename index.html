@@ -69,6 +69,39 @@
   .warn-txt{color:var(--coral);font-size:10px;font-weight:500}
   .svg-ck{width:10px;height:8px}
   .ck-svg{width:10px;height:8px}
+  /* ── 데콜테 탭 ── */
+  .lymph-map{display:block;width:100%;height:auto}
+  .map-wrap{background:linear-gradient(180deg,#FCFBF8,#F4F1EA);border:1px solid var(--border);border-radius:14px;padding:10px 6px 4px;margin:12px 16px}
+  .map-cap{font-size:11px;color:var(--muted);text-align:center;margin:2px 0 8px}
+  .legend{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:6px 0 8px}
+  .lg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--dark)}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .principle{background:var(--body-bg);border-left:3px solid var(--body);border-radius:0 8px 8px 0;padding:11px 14px;margin:8px 16px;font-size:12.5px;color:#1F5A66;line-height:1.75}
+  .principle b{color:var(--body)}
+  .analogy{background:var(--gold-bg);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:11px 14px;margin:8px 16px;font-size:12.5px;color:#6B5320;line-height:1.75}
+  .analogy b{color:var(--gold)}
+  .safe{background:var(--coral-bg);border-left:3px solid var(--coral);border-radius:0 8px 8px 0;padding:12px 14px;margin:8px 16px;font-size:12px;color:#7A3330;line-height:1.8}
+  .safe strong{color:var(--coral);font-weight:600}
+  .safe .ok{color:var(--body);font-weight:600}
+  .pill{font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;display:inline-block}
+  .p-light{background:var(--body-bg);color:var(--body)}
+  .p-mid{background:var(--gold-bg);color:var(--gold)}
+  .p-firm{background:var(--coral-bg);color:var(--coral)}
+  .p-cool{background:#FDF6E3;color:#B8860B;border:1px solid #EAD9A0}
+  .legendbox{margin:0 16px 10px;display:flex;gap:6px;flex-wrap:wrap}
+  .dstep{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 15px;margin:0 16px 10px}
+  .dstep-hd{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .dstep-no{width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--body);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .dstep-no.firm{background:var(--coral)}
+  .dstep-name{font-size:14px;font-weight:600;flex:1}
+  .dbadges{display:flex;gap:4px;flex-wrap:wrap;margin:2px 0 8px 35px}
+  .plain{font-size:13px;color:var(--dark);margin:0 0 6px 35px;line-height:1.7}
+  .plain b{color:var(--body)}
+  .drow{font-size:12px;color:var(--dark);margin:0 0 3px 35px}
+  .drow .k{color:var(--muted);display:inline-block;min-width:40px}
+  .why{font-size:11.5px;color:#6b6459;background:var(--tip-bg);border-radius:7px;padding:7px 10px;margin:6px 0 0 35px;line-height:1.65}
+  .why b{color:var(--gold)}
+  .gment{margin:0 16px 8px}
 </style>
 </head>
 <body>
@@ -92,6 +125,7 @@
     <button class="tab-btn active" onclick="showTab('open',this)">🌿 오픈</button>
     <button class="tab-btn" onclick="showTab('care',this)">🤍 페이셜</button>
     <button class="tab-btn" onclick="showTab('body',this)">💆 바디</button>
+    <button class="tab-btn" onclick="showTab('decollete',this)">💧 데콜테</button>
     <button class="tab-btn" onclick="showTab('close',this)">🌙 마감</button>
   </div>
 
@@ -433,7 +467,7 @@
         <div class="sc-row"><span class="sc-num">6</span> 쇄골 라인 마무리 펌프 — <b>약</b> · 3회</div>
         <div class="sc-row"><span class="sc-num">7</span> 어깨·쇄골 홀딩 3초 마무리</div>
         <div class="sc-row sc-warn" style="margin-top:6px">⚠ 목 앞(울대)·경동맥 강압 금지 · 강압은 근육(승모근·어깨·데콜테)에만 · 방향은 항상 쇄골 쪽</div>
-        <div class="sc-row" style="color:var(--muted);font-size:10px;margin-top:2px">상세·안전·게스트 멘트 → 「데콜테 림프 드레나쥐 교육 카드」 참고</div>
+        <div class="sc-row" style="color:var(--muted);font-size:10px;margin-top:2px">상세·그림·안전·게스트 멘트 → 상단 「💧 데콜테」 탭 참고</div>
       </div>
 
       <div class="sec-hd">⑦ 마스크 & LED</div>
@@ -480,6 +514,119 @@
       </div>
 
       <div class="mind-card"><strong>💬 마무리 멘트</strong> — "오늘은 제품이 아니라 <b>쉼·순환·좋은 에너지</b>를 위한 케어였어요. 잘 주무셨다면 저의 행복입니다." 처럼 케어 가치를 말로 마무리. <b>포인트는 고객이 최대한 푹 쉬게 하는 것.</b> (만족도↑ · 후기↑)</div>
+    </div>
+  </div>
+
+  <!-- ═══════ DECOLLETE (데콜테 교육) ═══════ -->
+  <div class="tab-panel" id="tab-decollete">
+    <div class="phase">
+      <div class="phase-hd ph-body"><span>💧 데콜테 림프 드레나쥐</span><span style="font-size:11px;font-weight:400;opacity:.7">교육 · 초보용</span></div>
+
+      <div class="map-wrap">
+        <div class="map-cap">🗺️ 먼저 이 그림으로 "어디로 흘려보내는지" 익히기</div>
+        <svg class="lymph-map" viewBox="0 0 400 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="데콜테 림프 흐름 지도">
+          <defs>
+            <marker id="aL" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2A7B8C"/></marker>
+            <marker id="aF" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#B85450"/></marker>
+            <marker id="aT" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#7c6fa0"/></marker>
+          </defs>
+          <path d="M168,164 C132,173 98,193 80,236 L80,320 L320,320 L320,236 C302,193 268,173 232,164 Z" fill="#F3EEE6" stroke="#D8D0C4" stroke-width="1.5"/>
+          <path d="M176,120 L224,120 L232,166 L168,166 Z" fill="#F3EEE6" stroke="#D8D0C4" stroke-width="1.5"/>
+          <ellipse cx="200" cy="72" rx="48" ry="56" fill="#F3EEE6" stroke="#D8D0C4" stroke-width="1.5"/>
+          <circle cx="150" cy="80" r="9" fill="#F3EEE6" stroke="#D8D0C4" stroke-width="1.5"/>
+          <circle cx="250" cy="80" r="9" fill="#F3EEE6" stroke="#D8D0C4" stroke-width="1.5"/>
+          <ellipse cx="118" cy="208" rx="40" ry="18" fill="#B85450" opacity="0.15"/>
+          <ellipse cx="282" cy="208" rx="40" ry="18" fill="#B85450" opacity="0.15"/>
+          <path d="M200,200 L120,214" stroke="#C9C3B8" stroke-width="2" stroke-dasharray="3,3" fill="none"/>
+          <path d="M200,200 L280,214" stroke="#C9C3B8" stroke-width="2" stroke-dasharray="3,3" fill="none"/>
+          <circle cx="174" cy="197" r="9" fill="#2A7B8C"/>
+          <text x="174" y="201" font-size="11" fill="#fff" text-anchor="middle" font-family="Arial">★</text>
+          <circle cx="226" cy="197" r="9" fill="#2A7B8C"/>
+          <text x="226" y="201" font-size="11" fill="#fff" text-anchor="middle" font-family="Arial">★</text>
+          <text x="200" y="178" font-size="12" fill="#2A7B8C" text-anchor="middle" font-weight="600">터미너스 (배수구)</text>
+          <text x="200" y="192" font-size="9.5" fill="#2A7B8C" text-anchor="middle">쇄골 위 · 여기부터 연다</text>
+          <path d="M150,94 C160,130 166,162 173,186" stroke="#2A7B8C" stroke-width="2.2" fill="none" marker-end="url(#aL)"/>
+          <path d="M250,94 C240,130 234,162 227,186" stroke="#2A7B8C" stroke-width="2.2" fill="none" marker-end="url(#aL)"/>
+          <path d="M124,214 L166,201" stroke="#2A7B8C" stroke-width="2" fill="none" marker-end="url(#aL)"/>
+          <path d="M276,214 L234,201" stroke="#2A7B8C" stroke-width="2" fill="none" marker-end="url(#aL)"/>
+          <path d="M188,190 L120,206" stroke="#B85450" stroke-width="2.4" fill="none" marker-end="url(#aF)"/>
+          <path d="M212,190 L280,206" stroke="#B85450" stroke-width="2.4" fill="none" marker-end="url(#aF)"/>
+          <path d="M200,250 C160,252 122,252 96,262" stroke="#7c6fa0" stroke-width="2.2" fill="none" marker-end="url(#aT)"/>
+          <path d="M200,250 C240,252 278,252 304,262" stroke="#7c6fa0" stroke-width="2.2" fill="none" marker-end="url(#aT)"/>
+          <text x="330" y="120" font-size="10.5" fill="#8A8278">귀 뒤</text>
+          <text x="326" y="150" font-size="10.5" fill="#8A8278">목 옆</text>
+          <text x="60" y="230" font-size="10.5" fill="#B85450" font-weight="600">승모근</text>
+          <text x="52" y="243" font-size="9" fill="#B85450">강·시원</text>
+          <text x="200" y="285" font-size="10.5" fill="#7c6fa0" text-anchor="middle">데콜테 → 겨드랑이</text>
+        </svg>
+        <div class="legend">
+          <span class="lg"><span class="dot" style="background:#2A7B8C"></span>림프 라인 · 가볍게</span>
+          <span class="lg"><span class="dot" style="background:#B85450"></span>근육 · 강(시원)</span>
+          <span class="lg"><span class="dot" style="background:#7c6fa0"></span>데콜테 · 겨드랑이로</span>
+        </div>
+      </div>
+
+      <div class="sec-hd">💧 '터미너스'가 뭐예요? (제일 중요)</div>
+      <div class="principle"><b>터미너스 = 배수구.</b> 목·얼굴·데콜테의 림프(물)가 <b>결국 다 빠져나가는 최종 출구</b>예요. 위치는 <b>쇄골 바로 위 오목한 곳</b>(그림의 ★ 두 곳).</div>
+      <div class="analogy"><b>🚗 교통정체처럼.</b> 출구(배수구)를 <b>먼저 열고</b> → 물을 그쪽으로 밀어보내요. 순서는 <b>① 배수구 열기 → ② 위에서 아래로 → ③ 다시 배수구로.</b> 시작도 끝도 터미너스!</div>
+
+      <div class="sec-hd">🌊 3가지만 기억</div>
+      <div class="principle"><b>1. 방향은 항상 쇄골(배수구) 쪽.</b> 위(귀·목)→아래(쇄골). 데콜테는 겨드랑이 쪽으로도.</div>
+      <div class="principle"><b>2. 림프는 살살, 근육은 시원하게.</b> 목 옆·앞은 아주 가볍게, 어깨·승모근은 지그시 강하게. 이 대비가 '시원하다'의 비결.</div>
+      <div class="principle"><b>3. 느리게, 3초 리듬.</b> 밀고 → 3초 유지 → 천천히 놓기.</div>
+
+      <div class="sec-hd" style="color:var(--coral)">⚠ 안전 — 이것만은 꼭</div>
+      <div class="safe"><strong>방향은 언제나 쇄골(심장) 쪽.</strong><br>⛔ 목 앞(울대·갑상선)·옆목 <b>맥박(경동맥)</b> 위 강압 절대 금지 — 살짝 쓸어만.<br><span class="ok">✅ 세게 OK</span> → 승모근·어깨·쇄골 아래 근육(뼈 위 직접 X).<br><strong>강압 생략(살살만):</strong> 최근 목·얼굴 수술/시술, 갑상선 질환, 목 림프절 부음·통증, 암 병력, 임신.<br><span style="color:#8A8278">※ 의료용 림프부종 치료가 아니라 이완·순환 목적 에스테틱 케어.</span></div>
+
+      <div class="sec-hd">압 세기 표기</div>
+      <div class="legendbox"><span class="pill p-light">약 · 피부만</span><span class="pill p-mid">중 · 지그시</span><span class="pill p-firm">강 · 근육</span><span class="pill p-cool">★ 시원</span></div>
+
+      <div class="sec-hd">💆 순서대로 따라 하기 (그림 참고)</div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no">0</div><div class="dstep-name">준비</div></div>
+        <div class="plain">오일을 손에 데워 데콜테·목에 <b>얇게</b> 펴 발라요. 손도 따뜻하게. 나는 손님 <b>머리맡</b>에.</div>
+        <div class="why">따뜻한 손+오일이 있어야 눌러도 안 아프고 부드럽게 밀려요.</div>
+      </div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no">1</div><div class="dstep-name">배수구 먼저 열기 (쇄골 위 ★)</div></div>
+        <div class="dbadges"><span class="pill p-light">약</span></div>
+        <div class="plain">그림의 <b>★ 자리</b>에 양손 손가락, <b>안쪽→바깥쪽</b>으로 부드럽게 <b>5~7번.</b></div>
+        <div class="why"><b>제일 먼저!</b> 출구를 안 열면 물이 갈 데가 없어요.</div>
+      </div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no">2</div><div class="dstep-name">목 옆선 쓸어내리기</div></div>
+        <div class="dbadges"><span class="pill p-light">약</span></div>
+        <div class="plain"><b>귀 밑→목 옆→쇄골</b>로 손바닥으로. 좌우 각 <b>5~7번.</b></div>
+        <div class="why"><span class="warn-txt">⚠ 목 앞·뛰는 맥박 위엔 압 X.</span> 살짝 쓸어만.</div>
+      </div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no">3</div><div class="dstep-name">귀 뒤 · 목덜미</div></div>
+        <div class="dbadges"><span class="pill p-light">약</span></div>
+        <div class="plain"><b>귀 뒤→목덜미 옆→쇄골</b>로 손가락으로. <b>5번.</b></div>
+      </div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no firm">4</div><div class="dstep-name">승모근·어깨 풀기 (시원 구간)</div></div>
+        <div class="dbadges"><span class="pill p-firm">강</span><span class="pill p-cool">★ 시원</span></div>
+        <div class="plain">승모근을 엄지로 지그시 <b>목→어깨 끝</b>으로. 뭉친 곳 <b>3초 꾹</b>. <b>3~5번.</b></div>
+        <div class="why"><b>손님이 제일 좋아하는 '시원한' 구간!</b> 근육이라 세게 눌러도 안전.</div>
+      </div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no">5</div><div class="dstep-name">데콜테 부채꼴 쓸기</div></div>
+        <div class="dbadges"><span class="pill p-mid">중</span></div>
+        <div class="plain">가슴 위판을 <b>가운데→겨드랑이·어깨</b>로 손바닥 전체 부채처럼. <b>5~7번.</b></div>
+        <div class="why">데콜테는 겨드랑이로도 빠져요. 뼈 위 직접 X.</div>
+      </div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no">6</div><div class="dstep-name">다시 배수구로 마무리 펌프</div></div>
+        <div class="dbadges"><span class="pill p-light">약</span></div>
+        <div class="plain">마지막에 다시 <b>★ 쇄골 위 배수구</b>로 모아 <b>3번</b> 펌프.</div>
+        <div class="why">시작도 끝도 터미너스. 이래야 순환 완성.</div>
+      </div>
+      <div class="dstep"><div class="dstep-hd"><div class="dstep-no">7</div><div class="dstep-name">홀딩 마무리</div></div>
+        <div class="dbadges"><span class="pill p-light">약</span></div>
+        <div class="plain">양손을 어깨·쇄골에 얹고 <b>3초</b> 지그시 눌렀다 천천히 떼요.</div>
+        <div class="why">안정감 있게 마무리 — 로렐의 '쉼'.</div>
+      </div>
+
+      <div class="sec-hd">💬 게스트 멘트 <span style="color:var(--coral);font-size:11px;font-weight:400">— massage 대신 release·circulation</span></div>
+      <div class="gment"><div class="en-line">"I'll gently work around your neck and shoulders to release the tension and help your circulation."</div><div class="sub" style="margin-left:0">시작 — 부드럽게 목·어깨 긴장 풀고 순환</div></div>
+      <div class="gment"><div class="en-line">"A little firmer here on your shoulders — please tell me if it's ever too much."</div><div class="sub" style="margin-left:0">압 들어갈 때 — 어깨는 조금 세게, 과하면 말해달라고</div></div>
+      <div class="gment"><div class="en-line">"All done — your neck and shoulders should feel lighter and refreshed now."</div><div class="sub" style="margin-left:0">마무리 — 가볍고 시원해졌다고</div></div>
+
+      <div class="mind-card"><strong>🌿 리듬이 곧 실력</strong> — 느리고 일정하게, 스텝 사이 손이 끊기지 않게. 속도가 곧 안정감, 안정감이 곧 로렐 스타일.</div>
     </div>
   </div>
 
