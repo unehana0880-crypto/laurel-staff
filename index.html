@@ -133,6 +133,18 @@
   @keyframes sp{0%,100%{opacity:1}50%{opacity:.25}}
   .todayteam{font-size:10.5px;color:var(--dark);font-weight:600;margin-left:auto;text-align:right;flex-shrink:0;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .item{position:relative}
+  .ph-clean{background:#EDF3F0;color:#2F6B57}
+  .freq-hd{font-size:12px;font-weight:700;padding:11px 16px 9px;border-top:1px solid var(--border);
+           border-bottom:1px solid var(--border);letter-spacing:.01em}
+  .f-day{background:#EDF6F0;color:#2F6B57}
+  .f-few{background:#FDF6E3;color:#8A6500}
+  .f-week{background:#EEEDF8;color:#4a40a0}
+  .wk{font-size:10px;font-weight:700;border-radius:999px;padding:2px 8px;margin-left:auto;
+      align-self:flex-start;white-space:nowrap;flex-shrink:0;background:#EFEBE4;color:#8A8278}
+  .wk.part{background:#FDF6E3;color:#8A6500}
+  .wk.full{background:#E8F5EE;color:var(--green)}
+  .item.done .wk{opacity:.9}
+  .goalsub{font-size:10.5px;color:var(--muted);margin-top:3px}
   .by{font-size:10px;font-weight:600;color:#fff;border-radius:999px;padding:1px 7px;
       margin-left:auto;align-self:flex-start;white-space:nowrap;flex-shrink:0}
   .item.done .by{opacity:.85}
@@ -163,14 +175,14 @@
   <div class="syncline"><span class="sdot" id="sdot"></span><span id="slbl">불러오는 중…</span><span class="todayteam" id="teamLbl"></span></div>
 
   <div class="tab-row">
-    <button class="tab-btn active" onclick="showTab('open',this)">🌿 오픈</button>
+    <button class="tab-btn active" onclick="showTab('open',this)">🌿 오픈·마감</button>
+    <button class="tab-btn" onclick="showTab('clean',this)">🧽 청소·정리</button>
     <button class="tab-btn" onclick="showTab('care',this)">🤍 페이셜</button>
     <button class="tab-btn" onclick="showTab('body',this)">💆 바디</button>
     <button class="tab-btn" onclick="showTab('decollete',this)">💧 데콜테</button>
-    <button class="tab-btn" onclick="showTab('close',this)">🌙 마감</button>
   </div>
 
-  <!-- ═══════ OPEN ═══════ -->
+  <!-- ═══════ 오픈 · 마감 ═══════ -->
   <div class="tab-panel active" id="tab-open">
     <div class="phase">
       <div class="phase-hd ph-open"><span>🌿 OPEN 준비</span><span style="font-size:11px;font-weight:400;opacity:.7">9:30 ~</span></div>
@@ -185,7 +197,6 @@
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">철문 열기 + 노티스 부착</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">조명 모두 켜기 (메인 + 간접)</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">환기 (창문 열기)</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고객 신발 놓는 곳 정리·청결</div><div class="sub">지저분하면 첫인상이 무너짐 — 가지런히·깨끗하게</div></div></div>
 
       <div class="sec-hd">3층 페이셜 방 — <span class="season-tag st-winter">❄️ 겨울</span></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">보일러 켜기 (1번, 2번)</div></div></div>
@@ -200,26 +211,99 @@
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향 + 라이터 준비</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">배경음악 켜기 (가야금 산조)</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">해면을 넉넉히 물에 적셔 준비</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고객에게 보여주는 거울 깨끗한지 체크</div><div class="sub">얼룩·지문·머리카락 없이</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">이불 위 팩 찌꺼기·먼지 제거 + 침구 반듯하게 정리</div></div></div>
 
       <div class="sec-hd">4층 바디케어 방 <span class="badge badge-body">바디 예약 있는 날</span></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 전원 ON + 표면 소독 + 정상 작동 확인</div><div class="sub">코스 세팅 화면 준비</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 전원 ON + 정상 작동 확인</div><div class="sub">코스 세팅 화면 준비</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">온열 도기 예열 (복부용)</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">가운·수건·사물함 키 재고 확인</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">냉장고에 수분팩 시원하게 넣기 + 실리콘 마스크 소독</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">냉장고에 수분팩 시원하게 넣기</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향(동백·편백) 디퓨징 + 음악 + 조도 다운</div><div class="sub">"리트리트" 느낌 통일</div></div></div>
 
-      <div class="sec-hd">직원 대기실</div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">환기 + 정리 정돈</div><div class="sub">직원 휴게 공간 (고객 공간 아님)</div></div></div>
 
       <div class="sec-hd">응대 준비</div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">창문 닫기 (대기실 + 필라테스 방)</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">차 준비 (계절별)</div><div class="sub"><span class="season-tag st-winter" style="margin:0">❄️ 겨울</span> 포트 물 끓여 따뜻한 차 · 찻주전자에 꽃 넣고 준비<br><span class="season-tag st-summer" style="margin:0">☀️ 여름</span> 미리 준비해둔 시원한 차 만들거나 채워두기</div></div></div>
       <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">태블릿 체크리스트 앱 켜놓기</div><div class="sub">laurel-care 앱</div></div></div>
     </div>
+
+
+    <div class="phase">
+      <div class="phase-hd ph-close"><span>🌙 마감 정리</span></div>
+      <div class="note">* 전원과 문단속이 핵심. 베드·기기 청소는 「🧽 청소·정리」 탭에 모아뒀습니다.</div>
+
+
+      <div class="sec-hd">4층 바디케어 <span class="badge badge-body">바디 진행한 날</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">온열 도기·기기 전원 OFF + 오일 테스터 정리</div></div></div>
+
+      <div class="sec-hd">전원 OFF</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">배경음악 끄기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">보일러 / 라디에이터 / 냉방기기 OFF</div><div class="sub"><span class="warn-txt">⚠ 오래된 건물 — 전압 약해 정전 위험. 반드시 확인</span></div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">장판 끄기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 전원 OFF</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">포트기 코드 뽑기</div><div class="sub"><span class="warn-txt">⚠ 화재 원인 — 반드시 뽑을 것!</span></div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">모든 조명 OFF</div></div></div>
+
+      <div class="sec-hd">마무리</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">전자기기 배터리 70% 이하면 충전</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">근무복 탈의 후 정리</div></div></div>
+
+    </div>
   </div>
 
+  <!-- ═══════ CLEAN (청소·정리) ═══════ -->
+  <div class="tab-panel" id="tab-clean">
+    <div class="phase">
+      <div class="phase-hd ph-clean"><span>🧽 청소 · 정리</span><span style="font-size:11px;font-weight:400;opacity:.7">매일 · 주 2~3회 · 주 1회</span></div>
+      <div class="note">* 손님은 시술보다 먼저 「깨끗한가」를 봅니다. 여기가 로렐의 기본입니다.</div>
+      <div class="freq-hd f-day">🔁 매일 — 그날 다 하면 다음 날 새로 시작</div>
+      <div class="sec-hd">대기실 · 계단 · 화장실</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">대기실 바닥 쓸기 + 물걸레</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고객 신발 놓는 곳 정리 + 먼지 제거</div><div class="sub">지저분하면 첫인상이 무너짐 — 가지런히·깨끗하게</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">테이블·소파 먼지 닦기 + 찻잔 정리</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">거울 얼룩·지문 제거</div><div class="sub">대기실 · 3층 · 화장실 — 더러운 거울을 손님에게 건네지 않기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">계단 먼지·머리카락 제거</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 변기·세면대 닦기 + 바닥 물기 제거</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 휴지·손비누·수건 채우기</div></div></div>
+      <div class="sec-hd">3층 페이셜 방</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">베드 먼지·머리카락 제거 + 눌린 자국 평평하게</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">이불 위 팩 찌꺼기 제거 + 침구 반듯하게 + 섬유탈취제</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장품 뚜껑 닫기 + 웨건 정리</div><div class="sub">겉에 보이는 부분이 정말 중요합니다</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향 받침대 닦기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고무볼 + 스파튤라 세척</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">해면 세척 후 제자리 / 일회용은 폐기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세면대 배수구 팩 찌꺼기 제거</div><div class="sub">막히면 바로 큰일 — 매일 확인</div></div></div>
+      <div class="sec-hd">4층 바디케어 <span class="badge badge-body">바디 있는 날</span></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 표면 소독</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">린넨·수건 교체</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">공기압(에어셀) 위생 커버 교체</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">실리콘 마스크 세척 + 종 소독</div></div></div>
+      <div class="sec-hd">마무리</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓰레기통 비우기</div><div class="sub">3층 · 4층 · 화장실 · 대기실</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓴 수건·가운 세탁기에 넣기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">직원 대기실 환기 + 정리 정돈</div><div class="sub">직원 휴게 공간 (고객 공간 아님)</div></div></div>
+      <div class="freq-hd f-few">📅 주 2~3회 — 이번 주 안에 목표 횟수만 채우면 됩니다</div>
+      <div class="note">* 아무 요일이나 괜찮습니다. 한 번 할 때마다 눌러주세요. 일요일 밤에 새 주로 넘어갑니다.</div>
+      <div class="item" data-freq="wN" data-goal="3" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">바닥 전체 물걸레 (대기실·3층·4층)</div></div></div>
+      <div class="item" data-freq="wN" data-goal="3" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">수건·가운 세탁 → 건조 → 개어놓기</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 대청소 (변기 안쪽·타일·거울)</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">걸레·타월 삶기(소독)</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">정수기·포트 물때 확인 후 세척</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">냉장고 정리 + 수분팩 유통기한 확인</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓰레기 분리배출</div></div></div>
+      <div class="freq-hd f-week">🗓️ 주 1회 — 이번 주에 한 번만 하면 됩니다</div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">유리문·창문·창틀 닦기</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">현관·계단 물청소</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">에어컨 · 선풍기 필터 먼지 제거</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">조명 · 간접등 먼지 제거</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">웨건 · 서랍 전부 꺼내서 정리</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 틈새 정밀 청소</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">디퓨저 · 향 · 오일 잔량 확인 후 보충</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">제품 유통기한 확인</div><div class="sub">지난 건 빼놓고 원장님께 보고</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">소모품 재고 확인 후 부족한 것 보고</div><div class="sub">해면 · 화장솜 · 마스크팩 · 가운 · 수건 · 오일</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세탁기 통 청소</div></div></div>
+      <div class="mind-card"><strong>✨ 청결</strong> — 피부관리사에게 청결은 자격증에서도 가장 큰 점수입니다. 그때그때 보이는 더러운 곳은 바로 치우세요.</div>
+    </div>
+  </div>
   <!-- ═══════ CARE (페이셜) ═══════ -->
   <div class="tab-panel" id="tab-care">
     <div class="phase">
@@ -723,49 +807,11 @@
     </div>
   </div>
 
-  <!-- ═══════ CLOSE ═══════ -->
-  <div class="tab-panel" id="tab-close">
-    <div class="phase">
-      <div class="phase-hd ph-close"><span>🌙 마감 정리</span></div>
-      <div class="note">* 고객 나간 후 베드 정리를 신속하게. 먼지, 머리카락 제거, 눌린 자국 평평하게, 베드 무새 정리.</div>
-
-      <div class="sec-hd">3층 페이셜 방 정리</div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">담요 정리</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">베드 먼지·머리카락 제거 + 눌린 자국 정리</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">섬유탈취제 뿌리기</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장품 뚜껑 닫기 + 웨건 정리</div><div class="sub">겉에 보이는 부분이 정말 중요합니다</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향 받침대 닦기</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고무볼 + 스파튤라 닦기</div></div></div>
-
-      <div class="sec-hd">4층 바디케어 위생 턴오버 <span class="badge badge-body">바디 진행한 날</span></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 표면 소독</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">린넨·수건 교체</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">공기압(에어셀) 위생 커버 교체</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">실리콘 마스크 세척 + 해면 폐기 + 종 소독</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">온열 도기·기기 전원 OFF + 오일 테스터 정리</div></div></div>
-
-      <div class="sec-hd">전원 OFF</div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">배경음악 끄기</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">보일러 / 라디에이터 / 냉방기기 OFF</div><div class="sub"><span class="warn-txt">⚠ 오래된 건물 — 전압 약해 정전 위험. 반드시 확인</span></div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">장판 끄기</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 전원 OFF</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">포트기 코드 뽑기</div><div class="sub"><span class="warn-txt">⚠ 화재 원인 — 반드시 뽑을 것!</span></div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">모든 조명 OFF</div></div></div>
-
-      <div class="sec-hd">마무리</div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">전자기기 배터리 70% 이하면 충전</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓰레기통 비우기</div></div></div>
-      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">근무복 탈의 후 정리</div></div></div>
-
-      <div class="mind-card"><strong>✨ 청결</strong> — 피부관리사에게 있어 청결은 자격증에서도 가장 큰 점수입니다. 그때그때 보이는 더러운 곳은 바로 치우세요.</div>
-    </div>
-  </div>
-
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, set, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0nJAcOV64dq2QT2BVSsGxis99VTA2eEI",
@@ -788,19 +834,27 @@ const DEFAULT_STAFF = [
   { id:'s5', name:'바비',    init:'바', order:5, active:true },
   { id:'s6', name:'트레이니', init:'트', order:6, active:true }
 ];
-const TAB_NAME = { open:'오픈', care:'페이셜', body:'바디', decollete:'데콜테', close:'마감' };
+const TAB_NAME = { open:'오픈·마감', clean:'청소·정리', care:'페이셜', body:'바디', decollete:'데콜테' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 /* ═══════ 상태 ═══════ */
 let STAFF  = {};          // schedule/staff 를 그대로 씀 (이름은 스케줄 앱에서 관리)
 let CHECKS = {};          // 오늘의 체크
 let TODAY  = dayKey(new Date());
+let WEEK   = {};          // 이번 주 주간 청소 기록
+let MONDAY = mondayKey(new Date());
 let ME = null;
 try { ME = localStorage.getItem('laurel_me') || null; } catch(e){}
 
 function dayKey(d){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
+function mondayKey(d){
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return dayKey(x);
+}
+function mmdd(ms){ const d = new Date(ms); return (d.getMonth()+1)+'/'+d.getDate(); }
 function hhmm(ms){
   const d = new Date(ms);
   return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
@@ -839,13 +893,26 @@ function tagItems(){
       b.className = 'by';
       b.style.display = 'none';
       el.appendChild(b);
+      if (el.dataset.freq){
+        const w = document.createElement('span');
+        w.className = 'wk';
+        el.appendChild(w);
+        b.style.display = 'none';
+      }
     });
   });
 }
 
 /* ═══════ 화면 그리기 ═══════ */
+function weekHits(id){
+  const v = WEEK[id];
+  if (!v) return [];
+  return Object.keys(v).map(k => Object.assign({ _k:k }, v[k]))
+               .filter(x => x && x.at).sort((a,b) => a.at - b.at);
+}
 function paint(){
   document.querySelectorAll('.item').forEach(el => {
+    if (el.dataset.freq){ paintWeekly(el); return; }
     const rec = CHECKS[el.dataset.id];
     const b = el.querySelector('.by');
     if (rec){
@@ -861,6 +928,31 @@ function paint(){
   });
   upd();
   paintTeam();
+}
+
+function paintWeekly(el){
+  const goal = Math.max(1, parseInt(el.dataset.goal || '1', 10));
+  const hits = weekHits(el.dataset.id);
+  const w = el.querySelector('.wk');
+  const b = el.querySelector('.by');
+  if (b) b.style.display = 'none';
+  if (hits.length >= goal){
+    el.classList.add('done');
+    w.className = 'wk full';
+  } else {
+    el.classList.remove('done');
+    w.className = hits.length ? 'wk part' : 'wk';
+  }
+  if (goal === 1){
+    w.textContent = hits.length
+      ? (hits[hits.length-1].init || '') + ' · ' + mmdd(hits[hits.length-1].at)
+      : '이번 주';
+  } else {
+    const seen = [];
+    hits.forEach(h => { const k = h.init || ''; if (k && seen.indexOf(k) < 0) seen.push(k); });
+    const who = seen.join('·');
+    w.textContent = hits.length + '/' + goal + (who ? ' · ' + who : '');
+  }
 }
 
 function paintMe(){
@@ -895,6 +987,7 @@ window.t = async function(el){
   }
   const id = el.dataset.id;
   const s = STAFF[ME];
+  if (el.dataset.freq){ return tapWeekly(el, s); }
   const on = !CHECKS[id];
   // 먼저 화면부터 (느낌이 즉각적이도록)
   if (on){
@@ -912,6 +1005,32 @@ window.t = async function(el){
     console.error('[laurel] 체크 저장 실패', e);
   }
 };
+
+async function tapWeekly(el, s){
+  const id = el.dataset.id;
+  const goal = Math.max(1, parseInt(el.dataset.goal || '1', 10));
+  const hits = weekHits(id);
+  const lb = el.querySelector('.lbl');
+  const label = (lb ? lb.textContent : '').replace(/\s+/g,' ').trim().slice(0, 60);
+
+  if (hits.length >= goal){
+    const last = hits[hits.length-1];
+    const who = last.name || '';
+    if (!confirm('이미 이번 주 ' + goal + '번 다 했습니다.\n마지막 기록(' + who + ' · ' + mmdd(last.at) + ')을 취소할까요?')) return;
+    try { await remove(ref(db, 'staffcheck/week/' + MONDAY + '/' + id + '/' + last._k)); }
+    catch(e){ status('err'); }
+    return;
+  }
+  try {
+    await push(ref(db, 'staffcheck/week/' + MONDAY + '/' + id), {
+      by: ME, name: s.name, init: initOf(s), order: s.order || 1,
+      at: Date.now(), tab: el.dataset.tab, label: label, goal: goal
+    });
+  } catch(e){
+    status('err');
+    console.error('[laurel] 주간 청소 저장 실패', e);
+  }
+}
 
 window.pickMe = function(id){
   ME = id;
@@ -943,12 +1062,13 @@ window.resetAll = async function(){
   const tab = panel.id.replace('tab-','');
   const nm = TAB_NAME[tab] || tab;
   const items = Array.from(panel.querySelectorAll('.item'));
-  const doneItems = items.filter(el => CHECKS[el.dataset.id]);
+  const doneItems = items.filter(el => !el.dataset.freq && CHECKS[el.dataset.id]);
   if (!doneItems.length){ alert('아직 체크된 항목이 없습니다.'); return; }
   const isCare = (tab === 'care' || tab === 'body');
+  const weekly = items.filter(el => el.dataset.freq).length;
   const msg = isCare
     ? nm + ' ' + doneItems.length + '개 완료 — 다음 손님 준비로 넘어갈까요?\n(오늘 기록에는 남습니다)'
-    : nm + ' 체크를 지울까요?\n(오늘 기록에는 남습니다)';
+    : nm + ' 체크 ' + doneItems.length + '개를 지울까요?\n(오늘 기록에는 남습니다' + (weekly ? ' · 주간 항목은 그대로 둡니다' : '') + ')';
   if (!confirm(msg)) return;
   const who = (ME && STAFF[ME]) ? STAFF[ME].name : '';
   try {
@@ -978,6 +1098,16 @@ function status(s){
   if (s === 'ok'){ d.className = 'sdot ok'; l.textContent = '함께 보는 중 — 다른 사람 체크도 뜹니다'; }
   else if (s === 'err'){ d.className = 'sdot err'; l.textContent = '연결 오류 — 새로고침 해주세요'; }
   else { d.className = 'sdot'; l.textContent = '불러오는 중…'; }
+}
+
+let stopWeek = null;
+function listenWeek(){
+  if (typeof stopWeek === 'function') { try { stopWeek(); } catch(e){} }
+  stopWeek = null;
+  stopWeek = onValue(ref(db, 'staffcheck/week/' + MONDAY), snap => {
+    WEEK = snap.val() || {};
+    paint();
+  }, err => { console.error('[laurel] 주간 청소 구독 실패', err); });
 }
 
 let stopChecks = null;
@@ -1018,12 +1148,15 @@ function showDate(){
 setInterval(() => {
   const k = dayKey(new Date());
   if (k !== TODAY){ TODAY = k; CHECKS = {}; showDate(); listenToday(); }
+  const m = mondayKey(new Date());
+  if (m !== MONDAY){ MONDAY = m; WEEK = {}; listenWeek(); }
 }, 60000);
 
 tagItems();
 showDate();
 paintMe();
 listenToday();
+listenWeek();
 upd();
 </script>
 </body>
