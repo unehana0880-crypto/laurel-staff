@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laurel Studio — 테라피스트 루틴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;600&display=swap');
   :root{--bg:#FAF9F6;--card:#fff;--border:#EBE8E2;--dark:#1C1917;--muted:#8A8278;--accent:#7c6fa0;--green:#3D7A52;--green-bg:#E8F5EE;--coral:#B85450;--coral-bg:#FBEAE9;--gold:#B8860B;--gold-bg:#FEF8E0;--guest:#4a40a0;--guest-bg:#EEEDF8;--close-bg:#FDF0E0;--close:#8A5A10;--tip-bg:#F8F6EF;--blue:#2A5FA8;--season-summer:#2D8DB5;--season-summer-bg:#E6F4FA;--season-winter:#6B7FA0;--season-winter-bg:#EEF1F6;--body:#2A7B8C;--body-bg:#E4F2F5}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;padding:0 0 80px}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;padding:0 0 80px}
   .w{max-width:520px;margin:0 auto;padding:0 16px}
   .top{text-align:center;padding:28px 0 20px}
   .brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.25em;color:var(--muted);text-transform:uppercase}
@@ -113,6 +115,30 @@
 @media (min-width:1440px){
   .w{max-width:1200px}
 }
+
+  /* ═══ 담당자 / 동기화 (추가) ═══ */
+  .mebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 0 4px}
+  .melbl{font-size:11px;color:var(--muted);white-space:nowrap}
+  .init{width:34px;height:34px;border-radius:50%;border:1.5px dashed #D8D2C8;background:#fff;
+        font-family:inherit;font-size:14px;font-weight:600;color:#B4ADA2;cursor:pointer;
+        display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;transition:all .12s}
+  .init.me{border:2px solid transparent;color:#fff}
+  .swapme{font-size:10.5px;color:var(--muted);background:none;border:none;font-family:inherit;
+          cursor:pointer;text-decoration:underline;padding:2px 4px}
+  .syncline{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted);padding:2px 0 8px}
+  .syncline #slbl{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sdot{width:6px;height:6px;border-radius:50%;background:#ccc;flex-shrink:0}
+  .sdot.ok{background:var(--green);animation:sp 2s infinite}
+  .sdot.err{background:var(--coral)}
+  @keyframes sp{0%,100%{opacity:1}50%{opacity:.25}}
+  .todayteam{font-size:10.5px;color:var(--dark);font-weight:600;margin-left:auto;text-align:right;flex-shrink:0;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item{position:relative}
+  .by{font-size:10px;font-weight:600;color:#fff;border-radius:999px;padding:1px 7px;
+      margin-left:auto;align-self:flex-start;white-space:nowrap;flex-shrink:0}
+  .item.done .by{opacity:.85}
+  .item > div:nth-child(2){flex:1;min-width:0}
+  .needme{background:var(--gold-bg);border:1px solid #EAD9A0;border-radius:10px;
+          padding:9px 12px;font-size:11.5px;color:#8A6500;margin:2px 0 8px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -131,6 +157,10 @@
       <button class="reset-btn" onclick="resetAll()">초기화</button>
     </div>
   </div>
+
+  <div class="mebar" id="meBar"></div>
+  <div class="needme" id="needMe" style="display:none">내 글자를 먼저 눌러주세요. 누가 했는지 같이 남아서, 다음 사람이 안 겹치게 이어서 할 수 있어요.</div>
+  <div class="syncline"><span class="sdot" id="sdot"></span><span id="slbl">불러오는 중…</span><span class="todayteam" id="teamLbl"></span></div>
 
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('open',this)">🌿 오픈</button>
@@ -733,30 +763,267 @@
 
 </div>
 
-<script>
-function t(el){el.classList.toggle('done');upd()}
-function upd(){
-  const panel=document.querySelector('.tab-panel.active');
-  const all=panel.querySelectorAll('.item').length;
-  const done=panel.querySelectorAll('.item.done').length;
-  document.getElementById('pf').style.width=all?(done/all*100)+'%':'0%';
-  document.getElementById('pl').textContent=done+' / '+all;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA0nJAcOV64dq2QT2BVSsGxis99VTA2eEI",
+  authDomain: "laurel-studio.firebaseapp.com",
+  databaseURL: "https://laurel-studio-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laurel-studio",
+  storageBucket: "laurel-studio.firebasestorage.app",
+  messagingSenderId: "516403607342",
+  appId: "1:516403607342:web:5389cdfe397afcee1cacbf"
+};
+const db = getDatabase(initializeApp(firebaseConfig));
+
+/* ═══════ 상수 ═══════ */
+const COLORS = ['#3E8E7E','#7A5B9E','#5B7FA6','#C2745B','#4A7C59','#96707F'];
+const DEFAULT_STAFF = [
+  { id:'s1', name:'구진모',  init:'구', order:1, active:true },
+  { id:'s2', name:'혜주',    init:'혜', order:2, active:true },
+  { id:'s3', name:'지현',    init:'지', order:3, active:true },
+  { id:'s4', name:'예진',    init:'예', order:4, active:true },
+  { id:'s5', name:'바비',    init:'바', order:5, active:true },
+  { id:'s6', name:'트레이니', init:'트', order:6, active:true }
+];
+const TAB_NAME = { open:'오픈', care:'페이셜', body:'바디', decollete:'데콜테', close:'마감' };
+const DAYS = ['일','월','화','수','목','금','토'];
+
+/* ═══════ 상태 ═══════ */
+let STAFF  = {};          // schedule/staff 를 그대로 씀 (이름은 스케줄 앱에서 관리)
+let CHECKS = {};          // 오늘의 체크
+let TODAY  = dayKey(new Date());
+let ME = null;
+try { ME = localStorage.getItem('laurel_me') || null; } catch(e){}
+
+function dayKey(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
-function resetAll(){
-  if(!confirm('현재 탭 체크를 초기화할까요?'))return;
-  document.querySelector('.tab-panel.active').querySelectorAll('.item.done').forEach(e=>e.classList.remove('done'));
+function hhmm(ms){
+  const d = new Date(ms);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function esc(v){
+  return String(v==null?'':v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function colorOf(s){ return COLORS[((s && s.order || 1)-1) % COLORS.length]; }
+function initOf(s){
+  if (s && s.init) return String(s.init).trim().charAt(0);
+  return String(s && s.name ? s.name : '?').trim().charAt(0) || '?';
+}
+function roster(){
+  const list = Object.values(STAFF).filter(s => s.active !== false);
+  list.sort((a,b) => (a.order||99)-(b.order||99));
+  return list;
+}
+
+/* ═══════ 항목마다 고정 ID 붙이기 ═══════ */
+function hash(str){
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = ((h*33) ^ str.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+}
+function tagItems(){
+  document.querySelectorAll('.tab-panel').forEach(panel => {
+    const tab = panel.id.replace('tab-','');
+    const seen = {};
+    panel.querySelectorAll('.item').forEach(el => {
+      const lbl = (el.querySelector('.lbl') ? el.querySelector('.lbl').textContent : el.textContent) || '';
+      const h = hash(lbl.replace(/\s+/g,' ').trim());
+      seen[h] = (seen[h]||0) + 1;
+      el.dataset.id = tab + '_' + h + '_' + seen[h];
+      el.dataset.tab = tab;
+      const b = document.createElement('span');
+      b.className = 'by';
+      b.style.display = 'none';
+      el.appendChild(b);
+    });
+  });
+}
+
+/* ═══════ 화면 그리기 ═══════ */
+function paint(){
+  document.querySelectorAll('.item').forEach(el => {
+    const rec = CHECKS[el.dataset.id];
+    const b = el.querySelector('.by');
+    if (rec){
+      el.classList.add('done');
+      const s = STAFF[rec.by] || { name: rec.name, order: rec.order };
+      b.textContent = (rec.init || initOf(s)) + ' · ' + hhmm(rec.at);
+      b.style.background = colorOf(s);
+      b.style.display = '';
+    } else {
+      el.classList.remove('done');
+      b.style.display = 'none';
+    }
+  });
   upd();
+  paintTeam();
 }
-function showTab(id,btn){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+
+function paintMe(){
+  const list = roster();
+  const bar = document.getElementById('meBar');
+  let h = '<span class="melbl">' + (ME ? '나' : '나는?') + '</span>';
+  list.forEach(s => {
+    const isMe = ME === s.id;
+    h += '<button class="init'+(isMe?' me':'')+'"' +
+         (isMe ? ' style="background:'+colorOf(s)+'"' : '') +
+         ' onclick="pickMe(\''+s.id+'\')" title="'+esc(s.name)+'">'+esc(initOf(s))+'</button>';
+  });
+  if (ME && STAFF[ME]) h += '<span class="melbl">' + esc(STAFF[ME].name) + '</span>' +
+                            '<button class="swapme" onclick="pickMe(null)">바꾸기</button>';
+  bar.innerHTML = h;
+  document.getElementById('needMe').style.display = ME ? 'none' : '';
+}
+
+function paintTeam(){
+  const names = [];
+  Object.values(CHECKS).forEach(r => { if (r && r.name && names.indexOf(r.name) < 0) names.push(r.name); });
+  document.getElementById('teamLbl').textContent =
+    names.length ? '오늘 ' + names.join(' · ') : '';
+}
+
+/* ═══════ 체크 ═══════ */
+window.t = async function(el){
+  if (!ME || !STAFF[ME]){
+    document.getElementById('needMe').style.display = '';
+    document.getElementById('meBar').scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  const id = el.dataset.id;
+  const s = STAFF[ME];
+  const on = !CHECKS[id];
+  // 먼저 화면부터 (느낌이 즉각적이도록)
+  if (on){
+    const lb = el.querySelector('.lbl');
+    const label = (lb ? lb.textContent : '').replace(/\s+/g,' ').trim().slice(0, 60);
+    CHECKS[id] = { by: ME, name: s.name, init: initOf(s), order: s.order || 1, at: Date.now(), tab: el.dataset.tab, label: label };
+  } else {
+    delete CHECKS[id];
+  }
+  paint();
+  try {
+    await set(ref(db, 'staffcheck/' + TODAY + '/checks/' + id), on ? CHECKS[id] : null);
+  } catch(e){
+    status('err');
+    console.error('[laurel] 체크 저장 실패', e);
+  }
+};
+
+window.pickMe = function(id){
+  ME = id;
+  try { id ? localStorage.setItem('laurel_me', id) : localStorage.removeItem('laurel_me'); } catch(e){}
+  paintMe();
+};
+
+/* ═══════ 진행률 · 탭 ═══════ */
+function upd(){
+  const panel = document.querySelector('.tab-panel.active');
+  const all = panel.querySelectorAll('.item').length;
+  const done = panel.querySelectorAll('.item.done').length;
+  document.getElementById('pf').style.width = all ? (done/all*100)+'%' : '0%';
+  document.getElementById('pl').textContent = done + ' / ' + all;
+}
+window.showTab = function(id, btn){
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
+  const rb = document.querySelector('.reset-btn');
+  if (rb) rb.textContent = (id === 'care' || id === 'body') ? '다음 손님' : '초기화';
   upd();
+};
+
+/* ═══════ 초기화 = 한 회 마감 ═══════ */
+window.resetAll = async function(){
+  const panel = document.querySelector('.tab-panel.active');
+  const tab = panel.id.replace('tab-','');
+  const nm = TAB_NAME[tab] || tab;
+  const items = Array.from(panel.querySelectorAll('.item'));
+  const doneItems = items.filter(el => CHECKS[el.dataset.id]);
+  if (!doneItems.length){ alert('아직 체크된 항목이 없습니다.'); return; }
+  const isCare = (tab === 'care' || tab === 'body');
+  const msg = isCare
+    ? nm + ' ' + doneItems.length + '개 완료 — 다음 손님 준비로 넘어갈까요?\n(오늘 기록에는 남습니다)'
+    : nm + ' 체크를 지울까요?\n(오늘 기록에는 남습니다)';
+  if (!confirm(msg)) return;
+  const who = (ME && STAFF[ME]) ? STAFF[ME].name : '';
+  try {
+    const snapshot = doneItems.map(el => {
+      const r = CHECKS[el.dataset.id] || {};
+      return { id: el.dataset.id, label: r.label || '', name: r.name || '', at: r.at || 0 };
+    });
+    await push(ref(db, 'staffcheck/' + TODAY + '/rounds'), {
+      tab: tab, tabName: nm, name: who,
+      done: doneItems.length, total: items.length, at: Date.now(),
+      items: snapshot
+    });
+    doneItems.forEach(el => { delete CHECKS[el.dataset.id]; });
+    paint();
+    for (const el of doneItems){
+      await set(ref(db, 'staffcheck/' + TODAY + '/checks/' + el.dataset.id), null);
+    }
+  } catch(e){
+    status('err');
+    alert('저장이 안 됐어요 — 인터넷을 확인해주세요');
+  }
+};
+
+/* ═══════ 동기화 ═══════ */
+function status(s){
+  const d = document.getElementById('sdot'), l = document.getElementById('slbl');
+  if (s === 'ok'){ d.className = 'sdot ok'; l.textContent = '함께 보는 중 — 다른 사람 체크도 뜹니다'; }
+  else if (s === 'err'){ d.className = 'sdot err'; l.textContent = '연결 오류 — 새로고침 해주세요'; }
+  else { d.className = 'sdot'; l.textContent = '불러오는 중…'; }
 }
-const d=new Date();
-const days=['일','월','화','수','목','금','토'];
-document.getElementById('today-date').textContent=d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0')+' ('+days[d.getDay()]+')';
+
+let stopChecks = null;
+function listenToday(){
+  if (typeof stopChecks === 'function') { try { stopChecks(); } catch(e){} }
+  stopChecks = null;
+  stopChecks = onValue(ref(db, 'staffcheck/' + TODAY + '/checks'), snap => {
+    CHECKS = snap.val() || {};
+    status('ok');
+    paint();
+  }, err => { status('err'); console.error('[laurel] 체크 구독 실패', err); });
+}
+
+onValue(ref(db, 'schedule/staff'), snap => {
+  const v = snap.val();
+  if (v && Object.keys(v).length){
+    STAFF = {};
+    Object.keys(v).forEach(k => { const s = v[k]; s.id = s.id || k; STAFF[k] = s; });
+  } else {
+    STAFF = {};
+    DEFAULT_STAFF.forEach(s => STAFF[s.id] = s);
+  }
+  if (ME && !STAFF[ME]) { ME = null; try{ localStorage.removeItem('laurel_me'); }catch(e){} }
+  paintMe();
+  paint();
+}, err => {
+  STAFF = {}; DEFAULT_STAFF.forEach(s => STAFF[s.id] = s);
+  paintMe(); paint();
+  console.error('[laurel] 직원 목록 실패', err);
+});
+
+/* 날짜 표시 + 자정 넘어가면 알아서 새 날로 */
+function showDate(){
+  const d = new Date();
+  document.getElementById('today-date').textContent =
+    d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0')+' ('+DAYS[d.getDay()]+')';
+}
+setInterval(() => {
+  const k = dayKey(new Date());
+  if (k !== TODAY){ TODAY = k; CHECKS = {}; showDate(); listenToday(); }
+}, 60000);
+
+tagItems();
+showDate();
+paintMe();
+listenToday();
 upd();
 </script>
 </body>
