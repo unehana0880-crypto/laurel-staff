@@ -6,7 +6,7 @@
 <title>Laurel Studio — 테라피스트 루틴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
   :root{--bg:#FAF9F6;--card:#fff;--border:#EBE8E2;--dark:#1C1917;--muted:#8A8278;--accent:#7c6fa0;--green:#3D7A52;--green-bg:#E8F5EE;--coral:#B85450;--coral-bg:#FBEAE9;--gold:#B8860B;--gold-bg:#FEF8E0;--guest:#4a40a0;--guest-bg:#EEEDF8;--close-bg:#FDF0E0;--close:#8A5A10;--tip-bg:#F8F6EF;--blue:#2A5FA8;--season-summer:#2D8DB5;--season-summer-bg:#E6F4FA;--season-winter:#6B7FA0;--season-winter-bg:#EEF1F6;--body:#2A7B8C;--body-bg:#E4F2F5}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -125,6 +125,12 @@
   .init.me{border:2px solid transparent;color:#fff}
   .swapme{font-size:10.5px;color:var(--muted);background:none;border:none;font-family:inherit;
           cursor:pointer;text-decoration:underline;padding:2px 4px}
+  .applinks{display:flex;gap:7px;padding:2px 0 10px;flex-wrap:wrap}
+  .applinks a{display:inline-flex;align-items:center;gap:5px;padding:9px 14px;border-radius:999px;
+              border:1.5px solid var(--border);background:#fff;color:var(--muted);
+              font-family:inherit;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
+  .applinks a:active{background:var(--dark);color:#fff;border-color:var(--dark)}
+  .applinks a.att{border-color:#CFE0D6;background:var(--green-bg);color:var(--green)}
   .syncline{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted);padding:2px 0 8px}
   .syncline #slbl{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .sdot{width:6px;height:6px;border-radius:50%;background:#ccc;flex-shrink:0}
@@ -159,6 +165,73 @@
   .item > div:nth-child(2){flex:1;min-width:0}
   .needme{background:var(--gold-bg);border:1px solid #EAD9A0;border-radius:10px;
           padding:9px 12px;font-size:11.5px;color:#8A6500;margin:2px 0 8px;line-height:1.6}
+  /* ═══════ 💎 케어 메뉴 탭 (손님께 보여드리는 화면) ═══════ */
+  #tab-menu.active{display:block;width:min(100vw,900px);margin-left:calc(50% - min(50vw,450px));padding:0 12px}
+  #tab-menu{--mpage:#E7E3DA;--msheet:#F6F3ED;--mink:#25241F;--mdim:#57544B;--mfaint:#8C8677;
+            --mline:#DCD6C8;--mhair:#E7E2D6;--msage:#5F7359;--msage-soft:#EAEEE7;
+            --malert:#8E4B2E;--malert-soft:#F6EBE4;
+            line-height:1.6;color:var(--mink)}
+  .mn-hint{background:var(--gold-bg);border:1px solid #EAD9A0;border-radius:10px;padding:9px 12px;
+           font-size:11.5px;color:#8A6500;line-height:1.6;margin:0 0 14px}
+  .mn-wrap{background:var(--mpage);border-radius:6px;padding:18px 12px 20px;display:flex;flex-direction:column;gap:18px}
+  .mn-sheet{background:var(--msheet);border:1px solid var(--mline);border-radius:3px;padding:26px 20px 22px}
+  @media(max-width:400px){.mn-sheet{padding:20px 13px 16px}}
+  .mn-brand{font-family:"Cinzel",'Cormorant Garamond',serif;font-weight:500;font-size:11px;
+            letter-spacing:.36em;color:var(--msage);text-indent:.36em}
+  .mn-h1{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;
+         font-size:clamp(30px,7vw,46px);line-height:1.05;margin:8px 0 7px;letter-spacing:-.015em;color:var(--mink)}
+  .mn-dek{margin:0;color:var(--mdim);font-size:13.5px}
+  .mn-dek b{display:block;color:var(--mink);font-weight:400;font-family:"Cormorant Garamond",Georgia,serif;
+            font-size:19px;font-style:italic;margin-top:2px}
+  .mn-hdr{border-bottom:1px solid var(--mline);padding-bottom:20px;margin-bottom:22px}
+  .mn-tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .mn-tblwrap table{border-collapse:collapse;width:100%;min-width:640px;font-size:12.5px}
+  .mn-tblwrap caption{caption-side:top;text-align:left;font-size:10px;letter-spacing:.2em;
+                      text-transform:uppercase;color:var(--mfaint);padding-bottom:10px}
+  .mn-tblwrap th,.mn-tblwrap td{padding:11px 12px;vertical-align:middle;border-bottom:1px solid var(--mhair)}
+  .mn-tblwrap thead th{border-bottom:1px solid var(--mline);padding-bottom:14px;vertical-align:bottom}
+  .mn-tblwrap th.mn-rowlab{text-align:left;width:130px;font-weight:600;color:var(--mink);font-size:12px;line-height:1.35}
+  .mn-tblwrap th.mn-rowlab span{display:block;color:var(--mfaint);font-weight:400;font-size:11px}
+  .mn-tblwrap td{text-align:center;color:var(--mdim)}
+  .mn-tblwrap td.mn-on{color:var(--mink)}
+  .mn-pname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:17px;color:var(--mink);line-height:1.2}
+  .mn-pname span{display:block;font-family:inherit;font-weight:400;font-size:11.5px;color:var(--mfaint);margin-top:3px}
+  .mn-badge{display:inline-block;margin-top:7px;background:var(--msage-soft);color:var(--msage);
+            font-size:9px;font-weight:600;letter-spacing:.16em;padding:3px 8px;border-radius:2px}
+  .mn-tblwrap col.mn-feature{background:rgba(95,115,89,.05)}
+  .mn-price{font-family:"Cormorant Garamond",Georgia,serif;font-size:21px;color:var(--mink);
+            font-variant-numeric:tabular-nums;line-height:1.15}
+  .mn-price span{display:block;font-family:inherit;font-size:11.5px;color:var(--mfaint)}
+  .mn-dash{color:var(--mfaint)}
+  .mn-yes{color:var(--msage);font-weight:600}
+  .mn-pkg{border-top:1px solid var(--mline);padding:22px 0 4px}
+  .mn-pkg:first-of-type{border-top:0;padding-top:6px}
+  .mn-pkghead{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .mn-pkghead h3{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:22px;line-height:1.2;color:var(--mink)}
+  .mn-pkghead h3 em{font-style:normal;color:var(--mfaint);font-size:14.5px;font-family:inherit}
+  .mn-p{font-family:"Cormorant Garamond",Georgia,serif;font-size:20px;white-space:nowrap;
+        font-variant-numeric:tabular-nums;color:var(--mink)}
+  .mn-p small{font-family:inherit;font-size:11.5px;color:var(--mfaint)}
+  .mn-sum{margin:7px 0 11px;color:var(--mdim);font-size:13px}
+  .mn-pkg ul{margin:0 0 11px;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+  .mn-pkg li{position:relative;padding-left:16px;font-size:12.8px;color:var(--mink);line-height:1.6}
+  .mn-pkg li::before{content:'';position:absolute;left:0;top:.75em;width:9px;height:1px;background:var(--msage)}
+  .mn-best{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:14.5px;color:var(--mdim)}
+  .mn-note{margin-top:24px;border-top:1px solid var(--mline);padding-top:16px;font-size:12px;color:var(--mdim);line-height:1.75}
+  .mn-note b{color:var(--mink);font-weight:600}
+  .mn-alert{margin-top:13px;background:var(--malert-soft);border-left:3px solid var(--malert);
+            padding:11px 13px;border-radius:0 3px 3px 0;font-size:12px;line-height:1.7;color:var(--mink)}
+  .mn-alert b{color:var(--malert);font-weight:700}
+  .mn-more{margin-top:0}
+  .mn-more>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+                   background:var(--msheet);border:1px solid var(--mline);border-radius:3px;padding:14px;
+                   font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mdim);font-weight:600}
+  .mn-more>summary::-webkit-details-marker{display:none}
+  .mn-more>summary::after{content:'▾';font-size:11px}
+  .mn-more[open]>summary::after{content:'▴'}
+  .mn-more[open]>summary{margin-bottom:18px}
+  .mn-more .mn-sheet+.mn-sheet{margin-top:18px}
+  .mn-foot{text-align:center;font-size:10.5px;color:var(--mfaint);letter-spacing:.06em;margin:0}
 </style>
 </head>
 <body>
@@ -182,12 +255,19 @@
   <div class="needme" id="needMe" style="display:none">내 글자를 먼저 눌러주세요. 누가 했는지 같이 남아서, 다음 사람이 안 겹치게 이어서 할 수 있어요.</div>
   <div class="syncline"><span class="sdot" id="sdot"></span><span id="slbl">불러오는 중…</span><span class="todayteam" id="teamLbl"></span></div>
 
+  <div class="applinks">
+    <a class="att" href="https://unehana0880-crypto.github.io/laurel-attendance/">⏰ 출퇴근 찍기</a>
+    <a href="https://unehana0880-crypto.github.io/laurel-schedule/">📅 근무 스케줄</a>
+    <a href="https://unehana0880-crypto.github.io/laurel-stock/">📦 재고·시재</a>
+  </div>
+
   <div class="tab-row">
     <button class="tab-btn active" onclick="showTab('open',this)">🌿 오픈·마감</button>
     <button class="tab-btn" onclick="showTab('clean',this)">🧽 청소·정리</button>
     <button class="tab-btn" onclick="showTab('care',this)">🤍 페이셜</button>
     <button class="tab-btn" onclick="showTab('body',this)">💆 바디</button>
     <button class="tab-btn" onclick="showTab('decollete',this)">💧 데콜테</button>
+    <button class="tab-btn" onclick="showTab('menu',this)">💎 케어 메뉴</button>
   </div>
 
   <!-- ═══════ 오픈 · 마감 ═══════ -->
@@ -844,6 +924,202 @@
     </div>
   </div>
 
+  <!-- ═══════ 💎 케어 메뉴 (손님께 보여드리는 화면) ═══════ -->
+  <div class="tab-panel" id="tab-menu">
+
+    <div class="mn-hint">
+      📱 <b>손님께 그대로 보여드리는 화면입니다.</b> 태블릿을 돌려서 보여드리고,
+      「Full menu · 자세한 메뉴 보기」를 눌러 프로그램 설명까지 함께 안내해 주세요.<br>
+      <b>바디는 반드시 먼저 말씀드리기</b> — 등·다리는 온열 베드, 손 마사지는 데콜테·어깨·얼굴. <b>전신 마사지가 아닙니다.</b>
+      그리고 <b>임신·심박조율기·체내 금속·최근 수술</b> 여부는 케어 시작 전에 꼭 확인.
+    </div>
+
+    <div class="mn-wrap">
+
+      <section class="mn-sheet">
+        <div class="mn-hdr">
+          <div class="mn-brand">LAUREL STUDIO</div>
+          <div class="mn-h1">Find your care</div>
+          <p class="mn-dek">세 가지 케어 중 나에게 맞는 것을 골라보세요<b>Pick the ritual that fits you.</b></p>
+        </div>
+
+        <div class="mn-tblwrap">
+        <table>
+          <caption>Three programs · 세 가지 프로그램</caption>
+          <colgroup><col><col><col><col class="mn-feature"></colgroup>
+          <thead>
+            <tr>
+              <th></th>
+              <th><div class="mn-pname">Personal Signature<span>퍼스널 시그니처</span></div></th>
+              <th><div class="mn-pname">Personal Premium<span>퍼스널 프리미엄</span></div></th>
+              <th><div class="mn-pname">Body &amp; Skin<span>퍼스널 바디 &amp; 스킨</span></div>
+                  <span class="mn-badge">MOST COMPLETE</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th class="mn-rowlab">Time<span>시간</span></th>
+              <td class="mn-on">50 min</td><td class="mn-on">60 min</td><td class="mn-on">90 min</td></tr>
+            <tr><th class="mn-rowlab">Price<span>가격</span></th>
+              <td><div class="mn-price">$54<span>83,000원</span></div></td>
+              <td><div class="mn-price">$73<span>110,000원</span></div></td>
+              <td><div class="mn-price">$110<span>165,000원</span></div></td></tr>
+            <tr><th class="mn-rowlab">Focus<span>중심</span></th>
+              <td>Face</td><td>Face — advanced</td><td>Body + Face</td></tr>
+            <tr><th class="mn-rowlab">Skin reading<span>피부 진단</span></th>
+              <td>Every visit</td><td>Every visit</td><td>Every visit</td></tr>
+            <tr><th class="mn-rowlab">Cleansing<span>클렌징</span></th>
+              <td>Tailored to your skin</td><td>Tailored to your skin</td><td>Tailored to your skin</td></tr>
+            <tr><th class="mn-rowlab">Mask<span>팩</span></th>
+              <td>Personalized ampoule<br>+ mask</td>
+              <td>Personalized ampoule<br>+ premium mask</td>
+              <td>Sheet mask<br>— your choice</td></tr>
+            <tr><th class="mn-rowlab">Body care<span>바디</span></th>
+              <td><span class="mn-dash">—</span></td><td><span class="mn-dash">—</span></td>
+              <td class="mn-on">Back &amp; legs by device<br>+ décolleté &amp; shoulder<br>massage by hand</td></tr>
+            <tr><th class="mn-rowlab">Expert routine<span>전문가 루틴</span></th>
+              <td><span class="mn-dash">—</span></td>
+              <td class="mn-yes">Full routine<br><span style="font-size:11px;font-weight:400">by email</span></td>
+              <td class="mn-on">Basic tips<br><span style="font-size:11px;color:#8C8677">by email</span></td></tr>
+            <tr><th class="mn-rowlab">Best for<span>추천</span></th>
+              <td>First visit,<br>quick glow</td>
+              <td>The full K-beauty ritual<br>with take-home guidance</td>
+              <td>Body relief + skin,<br>together</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <p class="mn-note">
+          <b>About the body program.</b> Back and legs are cared for by a warm heated bed. Décolleté,
+          shoulders and face are massaged by hand, by your therapist. <b>This is not a full-body massage.</b><br>
+          <span style="color:#8C8677">등과 다리는 온열 베드로, 데콜테·어깨·얼굴은 전문가의 손으로 마사지합니다. 전신 마사지가 아닙니다.</span>
+        </p>
+
+        <p class="mn-alert">
+          <b>Before you book.</b> Please tell us if you are pregnant, have a pacemaker or metal implant,
+          or have had surgery recently. The warm heated bed is not suitable during pregnancy — we will
+          guide you to a face-only program instead.<br>
+          <span style="color:#57544B">임신 중이시거나 심박조율기·체내 금속, 최근 수술 이력이 있으시면 예약 전에 알려주세요.
+          온열 베드는 임신 중 이용하실 수 없어 얼굴 전용 프로그램으로 안내해 드립니다.</span>
+        </p>
+      </section>
+
+      <details class="mn-more">
+        <summary>Full menu · 자세한 메뉴 보기</summary>
+
+        <section class="mn-sheet">
+          <div class="mn-hdr">
+            <div class="mn-brand">LAUREL STUDIO</div>
+            <div class="mn-h1">Care Menu</div>
+            <p class="mn-dek">Hongdae, Seoul · English-speaking consultation</p>
+          </div>
+
+          <div class="mn-pkg">
+            <div class="mn-pkghead"><h3>Package 1 — Personal Signature Care <em>50 min</em></h3>
+              <div class="mn-p">USD 54 <small>83,000원</small></div></div>
+            <p class="mn-sum">The essential personalized facial — matched to your skin on the day, never a fixed menu.</p>
+            <ul>
+              <li>Skin reading before anything is applied</li>
+              <li>Cleansing and light exfoliation matched to your barrier</li>
+              <li>Hydrating gel mask</li>
+              <li>Moisturizing cream for glow and barrier care</li>
+            </ul>
+            <p class="mn-best">Best for a first visit, and a clean reset.</p>
+          </div>
+
+          <div class="mn-pkg">
+            <div class="mn-pkghead"><h3>Package 2 — Personal Premium Care <em>60 min</em></h3>
+              <div class="mn-p">USD 73 <small>110,000원</small></div></div>
+            <p class="mn-sum">Everything in Signature, plus the expert routine you take home with you.</p>
+            <ul>
+              <li>Full skin reading, written up for you</li>
+              <li>Deep cleansing and gentle exfoliation</li>
+              <li>Personalized ampoule and premium mask</li>
+              <li>Extended facial massage for skin and mind balance</li>
+              <li><b>Full expert routine by email — including what not to buy</b></li>
+            </ul>
+            <p class="mn-best">Best for guests who want to leave Seoul knowing what their skin actually needs.</p>
+          </div>
+
+          <div class="mn-pkg">
+            <div class="mn-pkghead"><h3>Package 3 — Personal Body &amp; Skin Care <em>90 min</em></h3>
+              <div class="mn-p">USD 110 <small>165,000원</small></div></div>
+            <p class="mn-sum">Body and skin, cared for together in one ritual.</p>
+            <ul>
+              <li>Back and legs cared for by a warm heated bed</li>
+              <li>Décolleté and shoulder massage by hand, by your therapist</li>
+              <li>Sheet mask of your choice</li>
+              <li>Full Personal Signature facial included</li>
+              <li>Basic aftercare tips by email</li>
+            </ul>
+            <p class="mn-best">Best for long flights and heavy walking days.</p>
+          </div>
+
+          <p class="mn-note"><b>Please note.</b> Back and legs are cared for by a warm heated bed; décolleté,
+          shoulders and face are massaged by hand. <b>This is not a full-body massage.</b></p>
+          <p class="mn-alert"><b>Before you book.</b> Tell us if you are pregnant, have a pacemaker or metal
+          implant, or have had surgery recently. The warm heated bed is not suitable during pregnancy —
+          we will guide you to a face-only program instead.</p>
+        </section>
+
+        <section class="mn-sheet">
+          <div class="mn-hdr">
+            <div class="mn-brand">LAUREL STUDIO</div>
+            <div class="mn-h1">케어 메뉴</div>
+            <p class="mn-dek">서울 홍대 · 마포구 월드컵북로 7, 3층</p>
+          </div>
+
+          <div class="mn-pkg">
+            <div class="mn-pkghead"><h3>패키지 1 — 퍼스널 시그니처 케어 <em>50분</em></h3>
+              <div class="mn-p">83,000원 <small>USD 54</small></div></div>
+            <p class="mn-sum">기본 맞춤 페이셜 — 정해진 메뉴가 아니라, 그날의 피부에 맞춰 진행합니다.</p>
+            <ul>
+              <li>제품을 올리기 전 피부 진단</li>
+              <li>장벽 상태에 맞춘 클렌징과 가벼운 각질 정리</li>
+              <li>수분 젤리팩</li>
+              <li>광채와 장벽을 위한 보습 크림</li>
+            </ul>
+            <p class="mn-best">첫 방문, 그리고 피부를 정리하고 싶을 때.</p>
+          </div>
+
+          <div class="mn-pkg">
+            <div class="mn-pkghead"><h3>패키지 2 — 퍼스널 프리미엄 케어 <em>60분</em></h3>
+              <div class="mn-p">110,000원 <small>USD 73</small></div></div>
+            <p class="mn-sum">시그니처의 모든 것에, <b>가지고 가시는 전문가 루틴</b>이 더해집니다.</p>
+            <ul>
+              <li>정밀 피부 진단 — 기록해서 정리해 드립니다</li>
+              <li>딥 클렌징과 부드러운 각질 정리</li>
+              <li>맞춤 앰플과 프리미엄 팩</li>
+              <li>피부와 마음을 함께 풀어주는 연장 페이셜 마사지</li>
+              <li><b>상세 전문가 루틴 이메일 — 사지 말아야 할 것까지</b></li>
+            </ul>
+            <p class="mn-best">내 피부에 무엇이 필요한지 알고 돌아가고 싶은 분께.</p>
+          </div>
+
+          <div class="mn-pkg">
+            <div class="mn-pkghead"><h3>패키지 3 — 퍼스널 바디 &amp; 스킨 케어 <em>90분</em></h3>
+              <div class="mn-p">165,000원 <small>USD 110</small></div></div>
+            <p class="mn-sum">바디와 피부를 한 번에 관리합니다.</p>
+            <ul>
+              <li>등과 다리는 온열 베드로 케어</li>
+              <li>데콜테·어깨는 전문가의 손으로 마사지</li>
+              <li>원하시는 시트 마스크 선택</li>
+              <li>퍼스널 시그니처 페이셜 전체 포함</li>
+              <li>기본 홈케어 팁 이메일</li>
+            </ul>
+            <p class="mn-best">장거리 비행과 많이 걸은 날에.</p>
+          </div>
+
+          <p class="mn-note"><b>안내.</b> 등과 다리는 온열 베드로, 데콜테·어깨·얼굴은 전문가의 손으로 마사지합니다.
+          <b>전신 마사지가 아닙니다.</b></p>
+          <p class="mn-alert"><b>예약 전 확인.</b> 임신 중이시거나 심박조율기·체내 금속, 최근 수술 이력이 있으시면
+          미리 알려주세요. 온열 베드는 임신 중 이용하실 수 없어 얼굴 전용 프로그램으로 안내해 드립니다.</p>
+        </section>
+      </details>
+
+      <p class="mn-foot">LAUREL STUDIO · 서울 마포구 월드컵북로 7, 3층</p>
+    </div>
+  </div>
+
 </div>
 
 <script type="module">
@@ -864,14 +1140,14 @@ const db = getDatabase(initializeApp(firebaseConfig));
 /* ═══════ 상수 ═══════ */
 const COLORS = ['#3E8E7E','#7A5B9E','#5B7FA6','#C2745B','#4A7C59','#96707F'];
 const DEFAULT_STAFF = [
-  { id:'s1', name:'구진모',  init:'구', order:1, active:true },
-  { id:'s2', name:'혜주',    init:'혜', order:2, active:true },
-  { id:'s3', name:'지현',    init:'지', order:3, active:true },
-  { id:'s4', name:'예진',    init:'예', order:4, active:true },
-  { id:'s5', name:'바비',    init:'바', order:5, active:true },
-  { id:'s6', name:'트레이니', init:'트', order:6, active:true }
+  { id:'s1', name:'혜주', init:'혜', order:1, active:true },
+  { id:'s2', name:'진모', init:'진', order:2, active:true },
+  { id:'s3', name:'바비', init:'바', order:3, active:true },
+  { id:'s4', name:'예진', init:'예', order:4, active:true },
+  { id:'s5', name:'수진', init:'수', order:5, active:true },
+  { id:'s6', name:'지현', init:'지', order:6, active:true }
 ];
-const TAB_NAME = { open:'오픈·마감', clean:'청소·정리', care:'페이셜', body:'바디', decollete:'데콜테' };
+const TAB_NAME = { open:'오픈·마감', clean:'청소·정리', care:'페이셜', body:'바디', decollete:'데콜테', menu:'케어 메뉴' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 /* ═══════ 상태 ═══════ */
@@ -1101,6 +1377,15 @@ window.showTab = function(id, btn){
   btn.classList.add('active');
   const rb = document.querySelector('.reset-btn');
   if (rb) rb.textContent = (id === 'care' || id === 'body') ? '다음 손님' : '초기화';
+  /* 케어 메뉴는 체크 항목이 아니라 손님께 보여드리는 화면 — 진행률/내 글자 줄을 숨깁니다 */
+  const isMenu = (id === 'menu');
+  ['.prog-bar','.mebar','.syncline','.applinks'].forEach(sel => {
+    const el = document.querySelector(sel);
+    if (el) el.style.display = isMenu ? 'none' : '';
+  });
+  const nm2 = document.getElementById('needMe');
+  if (nm2 && isMenu) nm2.style.display = 'none';
+  if (!isMenu) paintMe();
   upd();
 };
 
