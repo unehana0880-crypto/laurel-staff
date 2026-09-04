@@ -1,1111 +1,277 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<title>Laurel Studio — 예약 관리</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap">
-<style>
-:root{--bg:#F4F1EC;--dark:#1C1917;--card:#FFF;--border:#E5DDD5;--green:#4A7C59;--green-bg:#EBF4EE;--yellow:#B8860B;--yellow-bg:#FEF9E4;--red:#B94040;--red-bg:#FDEAEA;--mid:#7A726A;--accent:#C9A84C;--room2:#5B7FA6;--room2-bg:#EAF0F8;--room6:#7A5B9E;--room6-bg:#F0EAF8;--room8:#3E8E7E;--room8-bg:#E6F2EF;--tab-h:64px;--hdr-h:54px;}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:var(--bg);color:var(--dark);display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
-.hdr{background:var(--dark);height:var(--hdr-h);padding:0 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.hdr-logo{font-family:'DM Serif Display',serif;font-size:18px;color:#F4F1EC;}
-.hdr-logo em{color:var(--accent);font-style:italic;}
-.hdr-date{font-size:11px;color:#9A9088;}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--tab-h) + 8px);}
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--tab-h);background:var(--card);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);z-index:50;}
-.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;font-family:inherit;padding:0;}
-.tab .ti{font-size:20px;line-height:1;}
-.tab .tl{font-size:10px;font-weight:600;color:var(--mid);}
-.tab.active .tl{color:var(--green);}
-.tab.t-plus{background:var(--green);border-radius:14px;margin:8px 6px;}
-.tab.t-plus .tl{color:white!important;}
-.screen{display:none;}.screen.active{display:block;}
-.today-hdr{padding:16px 18px 10px;display:flex;align-items:center;justify-content:space-between;}
-.today-hdr-title{font-family:'DM Serif Display',serif;font-size:20px;}
-.btn-share{display:flex;align-items:center;gap:6px;padding:9px 14px;background:var(--dark);color:white;border:none;border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;}
-.sync-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mid);padding:4px 18px 10px;}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:#ccc;}
-.sync-dot.connected{background:var(--green);animation:pulse 2s infinite;}
-.sync-dot.syncing{background:var(--accent);animation:pulse .5s infinite;}
-.sync-dot.error{background:var(--red);}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.today-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 18px 14px;}
-.sum-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center;}
-.sum-num{font-size:26px;font-weight:700;font-family:'DM Serif Display',serif;line-height:1;}
-.sum-label{font-size:10px;color:var(--mid);margin-top:3px;font-weight:500;}
-.today-slots,.slot-list{padding:0 18px;display:flex;flex-direction:column;gap:8px;}
-.slot-list{padding:0 14px;}
-.ts-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.ts-hdr{padding:11px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
-.ts-time{font-size:14px;font-weight:700;}
-.ts-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;}
-.ts-open{background:var(--green-bg);color:var(--green);}
-.ts-partial{background:var(--yellow-bg);color:var(--yellow);}
-.ts-full{background:var(--red-bg);color:var(--red);}
-.ts-add{width:30px;height:30px;background:var(--green);color:white;border:none;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.ts-rooms{display:grid;grid-template-columns:1fr 1fr;}
-.ts-divider{width:1px;background:var(--border);}
-.ts-room{padding:10px 12px;}
-.ts-rlabel{font-size:10px;font-weight:700;display:flex;align-items:center;gap:5px;margin-bottom:6px;}
-.rb{padding:2px 7px;border-radius:20px;font-size:10px;}
-.rb2{background:var(--room2-bg);color:var(--room2);}
-.rb6{background:var(--room6-bg);color:var(--room6);}
-.rb8{background:var(--room8-bg);color:var(--room8);}
-.pips{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap;}
-.pip{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border);}
-.pip.on2{background:var(--room2);border-color:transparent;}
-.pip.on6{background:var(--room6);border-color:transparent;}
-.pip.on8{background:var(--room8);border-color:transparent;}
-.bk-mini{background:var(--bg);border-radius:7px;padding:7px 8px;margin-bottom:4px;}
-.bk-row{display:flex;align-items:center;gap:5px;}
-.bk-name{font-size:12px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bk-time{font-size:11px;font-weight:700;color:var(--accent);margin-right:5px;}
-.bk-time.bk-ov{color:var(--yellow);}
-.bk-acts{display:flex;gap:3px;}
-.bk-btn{width:26px;height:26px;border:1px solid var(--border);background:white;border-radius:6px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;}
-.bk-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;}
-.btag{font-size:10px;padding:1px 6px;border-radius:10px;background:var(--border);color:var(--mid);}
-.btag-bed{background:var(--accent);color:white;font-weight:700;}
-.btag-class{background:#E5D5F0;color:var(--room6);font-weight:700;}
-.btag-ov{background:var(--yellow-bg);color:var(--yellow);font-weight:700;border:1px solid #F0D98A;}
-.src-klook{background:#FFF0E0;color:#C05000;}
-.src-ig{background:#FEF0F6;color:#B02060;}
-.src-wa{background:#E8F8EE;color:#1A8035;}
-.src-web{background:var(--green-bg);color:var(--green);}
-.src-kkt{background:#FEF9D6;color:#7A6500;}
-.src-abnb{background:#FFE8EC;color:#C4204A;}
-.empty-r{font-size:11px;color:var(--border);padding:2px 0;}
-.share-popup{display:none;position:fixed;inset:0;background:rgba(28,25,23,.5);z-index:200;align-items:flex-end;justify-content:center;}
-.share-popup.open{display:flex;}
-.share-sheet{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:16px 20px 32px;}
-.share-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px;}
-.share-title{font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:12px;}
-.share-text{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;line-height:1.7;white-space:pre-wrap;max-height:200px;overflow-y:auto;font-family:monospace;margin-bottom:14px;}
-.share-btns{display:flex;flex-direction:column;gap:8px;}
-.share-btn{padding:14px;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;}
-.sb-copy{background:var(--dark);color:white;}
-.sb-close{background:var(--bg);color:var(--mid);border:1px solid var(--border);}
-.cal-header{padding:16px 18px 10px;display:flex;align-items:center;justify-content:space-between;}
-.cal-month{font-family:'DM Serif Display',serif;font-size:20px;}
-.cal-arrows{display:flex;gap:6px;}
-.cal-arrows button{width:36px;height:36px;border:1px solid var(--border);background:var(--card);border-radius:10px;font-size:16px;cursor:pointer;}
-.cal-grid{padding:0 14px 14px;}
-.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px;}
-.cal-dow span{text-align:center;font-size:10px;font-weight:700;color:var(--mid);padding:4px 0;}
-.cal-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cal-cell{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid transparent;cursor:pointer;}
-.cal-cell .cn{font-size:13px;font-weight:500;}
-.cal-cell .cbar{width:20px;height:3px;border-radius:2px;margin-top:3px;}
-.cal-cell:active:not(.empty){opacity:.7;}
-.cal-cell.today{border-color:var(--accent);}
-.cal-cell.selected{background:var(--dark);color:white;}
-.cal-cell.empty{pointer-events:none;}
-.legend{display:flex;gap:14px;padding:6px 18px 14px;}
-.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mid);}
-.leg-dot{width:7px;height:7px;border-radius:50%;}
-.day-nav{padding:14px 18px 10px;display:flex;align-items:center;gap:10px;}
-.btn-back{width:36px;height:36px;border:1px solid var(--border);background:var(--card);border-radius:10px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.day-nav-title{font-family:'DM Serif Display',serif;font-size:18px;flex:1;}
-.overlay{display:none;position:fixed;inset:0;background:rgba(28,25,23,.5);z-index:100;align-items:flex-end;justify-content:center;}
-.overlay.open{display:flex;}
-.sheet{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;}
-.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
-.sheet-hdr{padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
-.sheet-title{font-family:'DM Serif Display',serif;font-size:18px;display:flex;align-items:center;gap:8px;}
-.edit-chip{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--yellow-bg);color:var(--yellow);}
-.btn-close{width:34px;height:34px;border:1px solid var(--border);background:none;border-radius:9px;font-size:16px;cursor:pointer;}
-.sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 20px;flex:1;}
-.sheet-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;padding-bottom:max(12px,env(safe-area-inset-bottom));}
-.fg{margin-bottom:15px;}
-label{display:block;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
-input,select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;background:var(--bg);outline:none;-webkit-appearance:none;}
-input:focus,select:focus{border-color:var(--green);background:white;}
-.room-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.rpick{padding:14px;border:2px solid var(--border);border-radius:12px;cursor:pointer;text-align:center;}
-.rpick.active{border-color:var(--dark);background:var(--dark);color:white;}
-.rpick .rn{font-size:24px;font-weight:700;}
-.rpick .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.65;}
-.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-.tpick{padding:10px 4px;border:1.5px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;}
-.tpick .tt{font-size:11px;font-weight:600;}
-.tpick .tr{font-size:10px;opacity:.6;margin-top:2px;}
-.tpick.active{border-color:var(--dark);background:var(--dark);color:white;}
-.tpick.t-full{background:var(--yellow-bg);border-color:#F0D98A;}
-.tpick.t-full .tr{color:var(--yellow);}
-.min-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px;}
-.mpick{padding:10px 2px;border:1.5px solid var(--border);border-radius:9px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;}
-.mpick.active{border-color:var(--dark);background:var(--dark);color:white;}
-.mpick.m-warn{background:var(--yellow-bg);border-color:#F0D98A;color:var(--yellow);}
-.mpick.m-warn.active{background:var(--dark);border-color:var(--dark);color:white;}
-.picked-time{font-size:12px;color:var(--green);font-weight:700;margin-top:9px;}
-.malert{padding:11px 13px;border-radius:10px;font-size:12px;margin-bottom:12px;font-weight:500;}
-.a-ok{background:var(--green-bg);color:var(--green);border:1px solid #B0D4BC;}
-.a-warn{background:var(--yellow-bg);color:var(--yellow);border:1px solid #F0D98A;}
-.a-err{background:var(--red-bg);color:var(--red);border:1px solid #F9C0C0;}
-.btn-save{flex:1;padding:14px;background:var(--green);color:white;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;}
-.btn-cancel{padding:14px 18px;border:1.5px solid var(--border);background:none;border-radius:12px;font-family:inherit;font-size:15px;cursor:pointer;}
-.btn-del-bk{padding:14px 16px;border:1.5px solid var(--red);color:var(--red);background:none;border-radius:12px;font-family:inherit;font-size:15px;cursor:pointer;}
-.no-sel{text-align:center;padding:60px 20px;color:var(--mid);}
-.no-sel .ni{font-size:48px;margin-bottom:12px;}
-.bed-picker{display:none;margin-top:8px;}
-.bed-picker.visible{display:block;}
-.bed-grid{display:flex;gap:6px;flex-wrap:wrap;}
-.bed-btn{width:44px;height:44px;border:2px solid var(--border);border-radius:10px;background:white;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.bed-btn:active{transform:scale(.95);}
-.bed-btn.overlap{border-color:#F0D98A;background:var(--yellow-bg);color:var(--yellow);}
-.bed-btn.active{border-color:var(--accent);background:var(--accent);color:white;}
-.bed-room-label{font-size:10px;font-weight:700;color:var(--mid);margin-bottom:6px;}
+.todayteam{font-size:10.5px;color:var(--dark);font-weight:600;margin-left:auto;text-align:right;flex-shrink:0;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item{position:relative}
+.ph-clean{background:#EDF3F0;color:#2F6B57}
+  .f-month{background:#F3EFEA;color:#7A5A2E}
+  .rule-card{background:#FFF7E8;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;
+             padding:13px 15px;margin:10px 16px 12px;font-size:12.5px;color:#6B5320;line-height:1.75}
+  .rule-card b{color:#8A5A10;font-weight:700}
+  .rule-card .rc-hd{font-size:13px;font-weight:700;color:#8A5A10;margin-bottom:7px}
+  .rule-card.soft{background:#F1F5F2;border-left-color:var(--green);color:#2F5C3F}
+  .rule-card.soft b{color:var(--green)}
+  .rule-card.soft .rc-hd{color:var(--green)}
+.freq-hd{font-size:12px;font-weight:700;padding:11px 16px 9px;border-top:1px solid var(--border);
+border-bottom:1px solid var(--border);letter-spacing:.01em}
+.f-day{background:#EDF6F0;color:#2F6B57}
+@@ -186,6 +194,12 @@
+<div class="tab-panel active" id="tab-open">
+<div class="phase">
+<div class="phase-hd ph-open"><span>🌿 OPEN 준비</span><span style="font-size:11px;font-weight:400;opacity:.7">9:30 ~</span></div>
+      <div class="rule-card">
+        <div class="rc-hd">🔔 오늘 하루 내내 — 3층 응대 공간에 항상 한 명</div>
+        안쪽 주방·직원 대기실에 다 들어가 있으면 손님이 들어와도 인기척을 느낄 수 없습니다.
+        손님 한 분을 놓치면 <b>결제 하나가 아니라 리뷰 하나와 그 리뷰가 데려올 다음 손님까지</b> 같이 잃습니다.
+        <b>둘이 같이 안쪽으로 들어가지 않기.</b>
+      </div>
+<div class="note">* 청결이 신뢰다 — 내가 "더럽다"고 느끼면 고객은 더 크게 본다. 보이는 곳부터 착실히.</div>
 
-@media (min-width: 768px){
-  body{ max-width:720px; } .tabbar{ max-width:720px; }
-  .hdr{ height:60px; padding:0 24px; } .hdr-logo{ font-size:20px; }
-  .today-summary{ padding:0 24px 16px; gap:12px; }
-  .sum-card{ padding:16px 12px; } .sum-num{ font-size:32px; } .sum-label{ font-size:11px; }
-  .today-slots{ padding:0 24px; gap:10px; } .slot-list{ padding:0 20px; gap:10px; }
-  .sync-badge{ padding:4px 24px 12px; font-size:12px; }
-}
-@media (min-width: 1024px){
-  body{ max-width:1080px; } .tabbar{ max-width:1080px; }
-  .today-summary{ padding:0 32px 20px; gap:16px; }
-  .sum-card{ padding:20px 16px; border-radius:14px; } .sum-num{ font-size:38px; } .sum-label{ font-size:12px; }
-  .today-slots, .slot-list{ display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0 32px; align-items:start; }
-  .ts-card{ border-radius:14px; } .ts-hdr{ padding:14px 18px; } .ts-time{ font-size:16px; }
-  .ts-add{ width:34px; height:34px; font-size:20px; } .ts-room{ padding:14px 16px; }
-  .cal-cell{ border-radius:12px; } .cal-cells{ gap:8px; } .cal-dow{ font-size:13px; }
-  .time-grid{ grid-template-columns:repeat(5,1fr); gap:8px; }
-  .sync-badge{ padding:4px 32px 14px; } .hdr{ padding:0 32px; }
-  .overlay, .share-popup{ align-items:center; }
-  .sheet{ max-width:560px; border-radius:20px; max-height:86vh; }
-  .share-sheet{ max-width:520px; border-radius:20px; padding:24px 28px 28px; }
-}
-@media (min-width: 1440px){
-  body{ max-width:1280px; } .tabbar{ max-width:1280px; }
-  .today-slots, .slot-list{ grid-template-columns:repeat(3,1fr); }
-}
-/* ═══ 📖 시술 그림 매뉴얼 ═══ */
-.mm-top{padding:16px 16px 4px;}
-.mm-ttl{font-size:17px;font-weight:700;letter-spacing:-.2px;}
-.mm-sub{font-size:11.5px;color:var(--mid);margin-top:3px;}
-.mm-sec{font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--green);
-        margin:20px 16px 8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.mm-card{margin:0 16px 10px;background:var(--card);border:1px solid var(--border);border-radius:12px;
-         overflow:hidden;cursor:pointer;transition:transform .1s;}
-.mm-card:active{transform:scale(.985);}
-.mm-art{line-height:0;border-bottom:1px solid var(--border);background:#F7F4EE;}
-.mm-art svg{width:100%;height:auto;display:block;}
-.mm-cap{display:flex;align-items:center;gap:9px;padding:11px 14px;font-size:14px;font-weight:600;}
-.mm-n{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex-shrink:0;
-      border-radius:50%;background:var(--green-bg);color:var(--green);font-size:11.5px;font-weight:700;}
-.mm-note{margin:20px 16px 12px;background:var(--yellow-bg);border:1px solid #EAD9A0;border-radius:12px;padding:14px 16px;}
-.mm-note h3{margin:0 0 9px;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:#8A6500;}
-.mm-note ul{margin:0;padding-left:16px;}
-.mm-note li{margin:6px 0;font-size:12.5px;line-height:1.65;color:#6B5D3F;}
-.mm-note b{color:#8A6500;font-weight:700;}
-.mm-link{display:block;margin:0 16px;padding:13px;text-align:center;background:var(--green);color:#fff;
-         border-radius:12px;font-size:13px;font-weight:600;text-decoration:none;}
-.mm-zoom{display:none;position:fixed;inset:0;z-index:200;background:rgba(28,25,23,.94);
-         padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.mm-zoom.on{display:block;}
-.mm-zoom-in{max-width:900px;margin:0 auto;}
-.mm-zoom-in svg{width:100%;height:auto;display:block;border-radius:10px;background:#F7F4EE;}
-.mm-zoom-cap{max-width:900px;margin:14px auto 0;text-align:center;color:#F4F1EC;font-size:15px;font-weight:600;}
-.mm-zoom-x{text-align:center;color:#A8A19A;font-size:11.5px;margin:6px 0 20px;}
-</style>
-</head>
-<body>
+<div class="sec-hd">출근</div>
+@@ -243,6 +257,12 @@
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">포트기 코드 뽑기</div><div class="sub"><span class="warn-txt">⚠ 화재 원인 — 반드시 뽑을 것!</span></div></div></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">모든 조명 OFF</div></div></div>
 
-<div class="hdr">
-  <div class="hdr-logo">Laurel <em>Studio</em></div>
-  <div class="hdr-date" id="hdrDate"></div>
+      <div class="sec-hd">문 닫기 전</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">문 바깥쪽 잘 보이는 곳에 안내문 걸기</div><div class="sub"><span class="warn-txt">⚠ 꼭 — 마감 후 오시는 손님이 헛걸음하지 않게</span></div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">에어컨에 에어컨 탈취제 뿌리기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">차·음료 부족할 것 같으면 미리 만들어 놓기</div><div class="sub">내일 아침에 허둥대지 않게</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">직원 대기실 환기 + 정리 정돈</div></div></div>
+
+<div class="sec-hd">마무리</div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">전자기기 배터리 70% 이하면 충전</div></div></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">근무복 탈의 후 정리</div></div></div>
+@@ -253,55 +273,72 @@
+<!-- ═══════ CLEAN (청소·정리) ═══════ -->
+<div class="tab-panel" id="tab-clean">
+<div class="phase">
+      <div class="phase-hd ph-clean"><span>🧽 청소 · 정리</span><span style="font-size:11px;font-weight:400;opacity:.7">매일 · 주 2~3회 · 주 1회</span></div>
+      <div class="note">* 손님은 시술보다 먼저 「깨끗한가」를 봅니다. 여기가 로렐의 기본입니다.</div>
+      <div class="phase-hd ph-clean"><span>🧽 청소 · 정리</span><span style="font-size:11px;font-weight:400;opacity:.7">매일 · 주 2~3회 · 주 1회 · 월</span></div>
+      <div class="rule-card">
+        <div class="rc-hd">🔔 무엇보다 먼저 — 3층 응대 공간에는 항상 한 명</div>
+        청소하다 보면 다 같이 안쪽 주방이나 직원 대기실로 들어가게 됩니다.
+        그러면 <b>손님이 문을 열고 들어와도 인기척을 느낄 수가 없습니다.</b><br><br>
+        손님 한 분을 놓치는 건 그날 결제 하나를 잃는 게 아닙니다.
+        <b>리뷰 하나를 잃고, 그 리뷰가 데려왔을 다음 손님까지 같이 잃습니다.</b>
+        우리는 한 분의 단가가 높은 곳이라 그 손실이 다른 가게보다 훨씬 큽니다.<br><br>
+        <b>둘이 같이 안쪽으로 들어가지 않습니다.</b> 한 명은 반드시 3층 응대 공간에 남아 있기.
+      </div>
+<div class="freq-hd f-day">🔁 매일 — 그날 다 하면 다음 날 새로 시작</div>
+      <div class="sec-hd">대기실 · 계단 · 화장실</div>
+      <div class="sec-hd">3층 케어룸</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">침구·베드 먼지·머리카락 돌돌이로 제거</div><div class="sub">하루에 여러 번 — 손님 나가면 바로. 눈에 보이면 그때그때</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">베개·침구에 묻은 팩제 물티슈로 제거</div><div class="sub">안 지워지면 그냥 두지 말고 빨래통에 넣기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">눌린 자국 평평하게 + 침구 반듯하게 + 섬유탈취제</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">웨건 정리 + 화장품 뚜껑 닫기</div><div class="sub">겉에 보이는 부분이 정말 중요합니다</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향 받침대 닦기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고무볼·스파튤라 알콜 뿌려서 건조</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">해면 세척 후 제자리 / 일회용은 폐기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">태블릿 액정 닦기</div><div class="sub">화장지에 손소독제 묻혀서</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">거울 얼룩·지문 제거</div><div class="sub">더러운 거울을 손님에게 건네지 않기</div></div></div>
+      <div class="sec-hd">대기실 · 필라테스 룸 · 화장실</div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">대기실 바닥 쓸기 + 물걸레</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">필라테스 룸 바닥 머리카락·먼지 쓸기</div></div></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고객 신발 놓는 곳 정리 + 먼지 제거</div><div class="sub">지저분하면 첫인상이 무너짐 — 가지런히·깨끗하게</div></div></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">테이블·소파 먼지 닦기 + 찻잔 정리</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">거울 얼룩·지문 제거</div><div class="sub">대기실 · 3층 · 화장실 — 더러운 거울을 손님에게 건네지 않기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">계단 먼지·머리카락 제거</div></div></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 변기·세면대 닦기 + 바닥 물기 제거</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 휴지·손비누·수건 채우기</div></div></div>
+      <div class="sec-hd">3층 페이셜 방</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">베드 먼지·머리카락 제거 + 눌린 자국 평평하게</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">이불 위 팩 찌꺼기 제거 + 침구 반듯하게 + 섬유탈취제</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장품 뚜껑 닫기 + 웨건 정리</div><div class="sub">겉에 보이는 부분이 정말 중요합니다</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">향 받침대 닦기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">고무볼 + 스파튤라 세척</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">해면 세척 후 제자리 / 일회용은 폐기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세면대 배수구 팩 찌꺼기 제거</div><div class="sub">막히면 바로 큰일 — 매일 확인</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 휴지 부족하면 예비분 놓아두기</div><div class="sub">대기 공간 바로 옆이라 손님이 다 봅니다</div></div></div>
+      <div class="sec-hd">쓰레기 · 걸레</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">공동 쓰레기통 쓰레기 눌러서 정리</div><div class="sub">직원 룸 뒤</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓰레기통 주변 정리</div><div class="sub">바닥에 떨어진 휴지·쓰레기 치우기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">직원 대기실 안쪽 배수망 비우기</div><div class="sub">팩 찌꺼기 눌러서 물기 빼고 버리기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">사용한 걸레 베란다에 널어놓기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">베란다에 마른 걸레 접어서 제자리에</div></div></div>
+<div class="sec-hd">4층 바디케어 <span class="badge badge-body">바디 있는 날</span></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 표면 소독</div></div></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">린넨·수건 교체</div></div></div>
+<div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">공기압(에어셀) 위생 커버 교체</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">실리콘 마스크 세척 + 종 소독</div></div></div>
+      <div class="sec-hd">마무리</div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓰레기통 비우기</div><div class="sub">3층 · 4층 · 화장실 · 대기실</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓴 수건·가운 세탁기에 넣기</div></div></div>
+      <div class="item" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">직원 대기실 환기 + 정리 정돈</div><div class="sub">직원 휴게 공간 (고객 공간 아님)</div></div></div>
+<div class="freq-hd f-few">📅 주 2~3회 — 이번 주 안에 목표 횟수만 채우면 됩니다</div>
+      <div class="note">* 아무 요일이나 괜찮습니다. 한 번 할 때마다 눌러주세요. 일요일 밤에 새 주로 넘어갑니다.</div>
+      <div class="item" data-freq="wN" data-goal="3" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">바닥 전체 물걸레 (대기실·3층·4층)</div></div></div>
+      <div class="item" data-freq="wN" data-goal="3" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">수건·가운 세탁 → 건조 → 개어놓기</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">화장실 대청소 (변기 안쪽·타일·거울)</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">걸레·타월 삶기(소독)</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">정수기·포트 물때 확인 후 세척</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">냉장고 정리 + 수분팩 유통기한 확인</div></div></div>
+      <div class="item" data-freq="wN" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓰레기 분리배출</div></div></div>
+      <div class="note">* 요일은 정해져 있지 않습니다. 한 번 할 때마다 눌러주세요. 일요일 밤에 새 주로 넘어갑니다.</div>
+      <div class="item" data-freq="w" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">3·4층 케어 공간 베딩 전부 끌어내서 바닥·구석 청소</div><div class="sub">손님 없는 시간에 — 한 명은 3층에 남기</div></div></div>
+      <div class="item" data-freq="w" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">계단 쓸고 물걸레 + 은색 손잡이 지문 제거</div><div class="sub">1층까지는 아니어도 우리 층은 깨끗하게</div></div></div>
+      <div class="item" data-freq="w" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">4층 화장실 청소</div><div class="sub">물때·거뭇한 자국까지 제거</div></div></div>
+<div class="freq-hd f-week">🗓️ 주 1회 — 이번 주에 한 번만 하면 됩니다</div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">유리문·창문·창틀 닦기</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">현관·계단 물청소</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">에어컨 · 선풍기 필터 먼지 제거</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">조명 · 간접등 먼지 제거</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">웨건 · 서랍 전부 꺼내서 정리</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 틈새 정밀 청소</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">디퓨저 · 향 · 오일 잔량 확인 후 보충</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">제품 유통기한 확인</div><div class="sub">지난 건 빼놓고 원장님께 보고</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">소모품 재고 확인 후 부족한 것 보고</div><div class="sub">해면 · 화장솜 · 마스크팩 · 가운 · 수건 · 오일</div></div></div>
+      <div class="item" data-freq="w1" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세탁기 통 청소</div></div></div>
+      <div class="mind-card"><strong>✨ 청결</strong> — 피부관리사에게 청결은 자격증에서도 가장 큰 점수입니다. 그때그때 보이는 더러운 곳은 바로 치우세요.</div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">3·4층 창문 닦기</div><div class="sub">바깥 배경이 보이는 창 — 손님 눈에 그대로 들어옵니다</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">3·4층 외부 벽면 물걸레</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">4층 올라가는 계단 청소</div><div class="sub">맨발로 다니는 곳입니다</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">1층 유리 현관문 닦기</div><div class="sub">너무 더러우면</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">아로마 미스트 새로 만들기</div><div class="sub">이전 것 버리고 → 물 가득 → 유칼립투스·로즈마리·타임 2~3방울씩 넣고 섞기</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">틀니세정제로 통·스파튤라 모아서 세정</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">쓰레기통 냄새나면 세척</div><div class="sub">베란다에 말린 뒤 제자리에</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">냉장고 정리</div><div class="sub">간식·음료 중 유통기한 지난 것과 쓰레기 버리기</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">웨건·서랍 전부 꺼내서 정리</div></div></div>
+      <div class="item" data-freq="w" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">부족한 소모품 매니저 단톡방에 올리기</div><div class="sub">해면 · 화장솜 · 마스크팩 · 가운 · 수건 · 오일</div></div></div>
+      <div class="freq-hd f-month">🈷️ 한 달에 1~2번</div>
+      <div class="item" data-freq="m" data-goal="2" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">전체 화장품 개수·수량 체크</div></div></div>
+      <div class="item" data-freq="m" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">에어컨 · 선풍기 필터 먼지 제거</div></div></div>
+      <div class="item" data-freq="m" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">조명 · 간접등 먼지 제거</div></div></div>
+      <div class="item" data-freq="m" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">세라젬 틈새 정밀 청소</div></div></div>
+      <div class="item" data-freq="m" onclick="t(this)"><div class="cb"><svg class="ck-svg ck" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="lbl">포트 물때 제거</div><div class="sub">겨울에 특히 잘 생깁니다</div></div></div>
+      <div class="rule-card soft">
+        <div class="rc-hd">🌿 기본은 이것 하나</div>
+        <b>내가 쓴 것은 내가 제자리에.</b> 본인이 만진 것은 본인이 정리합니다.<br>
+        피부관리사에게 청결은 자격증에서도 가장 큰 점수입니다.
+        체크리스트에 없어도 눈에 보이는 더러운 곳은 그때그때 치우세요.
+      </div>
 </div>
-
-<div class="content">
-  <div class="screen active" id="scrToday">
-    <div class="today-hdr">
-      <div class="today-hdr-title" id="todayTitle"></div>
-      <button class="btn-share" onclick="openShare()">📤 공유</button>
-    </div>
-    <div class="sync-badge">
-      <div class="sync-dot" id="syncDot"></div>
-      <span id="syncLabel">Firebase 연결 중...</span>
-    </div>
-    <div class="today-summary" id="todaySummary"></div>
-    <div class="today-slots" id="todaySlots"></div>
-    <div style="height:14px"></div>
-  </div>
-
-  <div class="screen" id="scrCal">
-    <div class="cal-header">
-      <div class="cal-month" id="calLabel"></div>
-      <div class="cal-arrows">
-        <button onclick="changeMonth(-1)">‹</button>
-        <button onclick="changeMonth(1)">›</button>
-      </div>
-    </div>
-    <div class="cal-grid">
-      <div class="cal-dow"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
-      <div class="cal-cells" id="calCells"></div>
-    </div>
-    <div class="legend">
-      <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>여유</div>
-      <div class="leg"><div class="leg-dot" style="background:var(--accent)"></div>일부 참</div>
-      <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>빽빽함</div>
-    </div>
-  </div>
-
-  <div class="screen" id="scrDay">
-    <div class="day-nav">
-      <button class="btn-back" onclick="goTab('cal')">←</button>
-      <div style="flex:1">
-        <div class="day-nav-title" id="dayTitle">날짜 선택</div>
-        <div style="font-size:11px;color:var(--mid)">시간대별 예약 현황</div>
-      </div>
-      <button class="btn-share" style="font-size:12px;padding:8px 12px;" onclick="openShare(selDate)">📤</button>
-    </div>
-    <div class="slot-list" id="slotList"></div>
-    <div style="height:14px"></div>
-  </div>
-
-  <div class="screen" id="scrManual">
-    <div class="mm-top">
-      <div class="mm-ttl">시술 순서 그림 매뉴얼</div>
-      <div class="mm-sub">손과 도구만 그렸습니다 · 그림을 누르면 크게 보입니다</div>
-    </div>
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<g id="mhand">
-  <path d="M -46 14 L -52 -24 Q -60 -44 -84 -56 Q -108 -68 -100 -84 Q -92 -98 -70 -84 L -46 -62 L -42 -78 Q -40 -166 -18 -166 Q -12 -166 -12 -96 L -8 -110 Q -6 -184 16 -184 Q 22 -184 20 -100 L 24 -108 Q 30 -176 50 -172 Q 56 -170 46 -92 L 52 -96 Q 62 -150 78 -142 Q 84 -138 68 -66 Q 60 -20 56 10 Q 6 26 -46 14 Z" fill="#F7F4EE" stroke="#2B2A26" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-  <path d="M -34 -6 Q 4 6 44 -4" fill="none" stroke="#B9B2A4" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-  <path d="M -30 -30 Q -4 -20 22 -26" fill="none" stroke="#B9B2A4" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="mface">
-  <path d="M 332 390 C 326 278, 386 224, 450 224 C 514 224, 574 278, 568 390 C 562 500, 512 580, 450 580 C 388 580, 338 500, 332 390 Z" fill="none" stroke="#2B2A26" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 330 360 C 300 240, 380 180, 450 180 C 520 180, 600 240, 570 360" fill="none" stroke="#B9B2A4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<g id="mbottle">
-  <rect x="-24" y="-43.2" width="48" height="86.4" rx="9.6" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-  <rect x="-10.4" y="-62.4" width="20.8" height="20.8" rx="4.8" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-  <path d="M -10.4 -62.4 l -17.6 0 l 0 9.6" fill="none" stroke="#2B2A26" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-  <line x1="-24" y1="0" x2="24" y2="0" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="mjar">
-  <rect x="-25.2" y="-19.8" width="50.4" height="39.6" rx="7.2" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-  <rect x="-28.8" y="-30.6" width="57.6" height="13.2" rx="4.8" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="msponge">
-  <rect x="-54" y="-43.2" width="108" height="86.4" rx="27" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-  <line x1="-27" y1="-21.6" x2="-27" y2="21.6" stroke="#B9B2A4" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-  <line x1="0" y1="-21.6" x2="0" y2="21.6" stroke="#B9B2A4" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-  <line x1="27" y1="-21.6" x2="27" y2="21.6" stroke="#B9B2A4" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="mspatula">
-  <rect x="-6.3" y="-63" width="12.6" height="108" rx="6.3" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-  <ellipse cx="0" cy="55.8" rx="18" ry="23.4" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="mdrop">
-  <path d="M 0 14 c -7 -12, -7 -20, 0 -28 c 7 8, 7 16, 0 28 Z" fill="none" stroke="#5F7359" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="mswirl">
-  <path d="M 0 0 a 26 26 0 1 1 18.2 18.72" fill="none" stroke="#5F7359" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-  <path d="M 44.2 18.72 l -14 -2 m 14 2 l -4 -13" fill="none" stroke="#5F7359" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="mcotton">
-  <circle cx="0" cy="0" r="38" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-  <circle cx="0" cy="0" r="29" fill="none" stroke="#B9B2A4" stroke-width="2.2" vector-effect="non-scaling-stroke"/>
-</g>
-<g id="meye">
-  <circle cx="0" cy="0" r="34" fill="none" stroke="#2B2A26" stroke-width="3.4" vector-effect="non-scaling-stroke"/>
-  <circle cx="0" cy="0" r="25" fill="none" stroke="#B9B2A4" stroke-width="2.2" vector-effect="non-scaling-stroke"/>
-</g>
-</defs></svg>
-    <div class="mm-sec">준비</div>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">1</text><ellipse cx="450" cy="560" rx="240" ry="92" fill="none" stroke="#2B2A26" stroke-width="3.4"/><path d="M 210 560 a 240 92 0 0 0 480 0" fill="none" stroke="#2B2A26" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M 320 548 q 14 -16 28 0" fill="none" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M 388 548 q 14 -16 28 0" fill="none" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M 456 548 q 14 -16 28 0" fill="none" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M 524 548 q 14 -16 28 0" fill="none" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><use href="#msponge" transform="translate(450 470) rotate(-6) scale(1.074)"/><use href="#mdrop" transform="translate(407 564)"/><use href="#mdrop" transform="translate(450 549.7)"/><use href="#mdrop" transform="translate(493 564)"/><use href="#mhand" transform="translate(352 392) rotate(118) scale(0.84 0.84)"/><use href="#mhand" transform="translate(556 392) rotate(-118) scale(-0.84 0.84)"/></svg></div><figcaption class="mm-cap"><span class="mm-n">1</span>해면 적시기</figcaption></figure>
-    <div class="mm-sec">1 · 딥 클렌징 & 각질</div>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">2</text><use href="#mface" transform="translate(0 0)"/><use href="#mhand" transform="translate(452 392) rotate(180) scale(0.92 0.92)"/><use href="#mbottle" transform="translate(780 315.2) scale(1.1875)"/><line x1="736" y1="344" x2="626" y2="404" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 626 404 L 635.1 392.1 M 626 404 L 641.0 402.8" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><use href="#mdrop" transform="translate(485 346)"/><use href="#mdrop" transform="translate(522.5 326.5)"/><use href="#mdrop" transform="translate(560 307)"/><use href="#mdrop" transform="translate(597.5 326.5)"/><use href="#mdrop" transform="translate(635 346)"/></svg></div><figcaption class="mm-cap"><span class="mm-n">2</span>아로마 미스트</figcaption></figure>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">3</text><use href="#mface" transform="translate(0 0)"/><use href="#mhand" transform="translate(338 458) rotate(-108) scale(0.8 0.8)"/><use href="#mhand" transform="translate(566 458) rotate(108) scale(-0.8 0.8)"/><use href="#mswirl" transform="translate(382 400)"/><use href="#mswirl" transform="translate(470 400)"/><use href="#mswirl" transform="translate(426 506)"/><use href="#mbottle" transform="translate(786 702.8)"/></svg></div><figcaption class="mm-cap"><span class="mm-n">3</span>클렌징 밀크</figcaption></figure>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">4</text><use href="#mface" transform="translate(0 0)"/><use href="#msponge" transform="translate(340 436) rotate(-8)"/><use href="#msponge" transform="translate(566 436) rotate(8)"/><use href="#mhand" transform="translate(340 436) rotate(-118) scale(0.72 0.72)"/><use href="#mhand" transform="translate(566 436) rotate(118) scale(-0.72 0.72)"/><line x1="320" y1="568" x2="236" y2="632" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 236 632 L 243.2 618.8 M 236 632 L 250.6 628.6" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="586" y1="568" x2="668" y2="632" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 668 632 L 653.4 628.4 M 668 632 L 661.0 618.8" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><figcaption class="mm-cap"><span class="mm-n">4</span>해면으로 닦기</figcaption></figure>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">5</text><use href="#mface" transform="translate(0 0)"/><use href="#mcotton" transform="translate(452 404)"/><use href="#mhand" transform="translate(452 404) rotate(180) scale(0.66 0.66)"/><circle cx="356" cy="300" r="11" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="548" cy="300" r="11" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="452" cy="306" r="11" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="390" cy="520" r="11" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="514" cy="520" r="11" fill="none" stroke="#5F7359" stroke-width="3"/><use href="#mbottle" transform="translate(788 688.5) scale(0.975)"/></svg></div><figcaption class="mm-cap"><span class="mm-n">5</span>PHA 각질 정리</figcaption></figure>
-    <div class="mm-sec">2 · 수분 젤리팩 + LED</div>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">6</text><use href="#mface" transform="translate(0 0)"/><path d="M 366 358 q 32 -20 62 0" fill="none" stroke="#5F7359" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M 412 432 q 32 -20 62 0" fill="none" stroke="#5F7359" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M 458 358 q 32 -20 62 0" fill="none" stroke="#5F7359" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M 504 432 q 32 -20 62 0" fill="none" stroke="#5F7359" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="390" cy="468" r="28" fill="none" stroke="#5F7359" stroke-width="3.2"/><circle cx="516" cy="468" r="28" fill="none" stroke="#5F7359" stroke-width="3.2"/><g transform="rotate(-26 700 438)"><use href="#mspatula" transform="translate(700 438) scale(1.056)"/></g><use href="#mhand" transform="translate(700 340) rotate(150) scale(-0.72 0.72)"/><rect x="160.3" y="677.9" width="71.4" height="56.1" rx="10.2" fill="none" stroke="#2B2A26" stroke-width="3.4"/><rect x="155.2" y="662.6" width="81.6" height="18.7" rx="6.8" fill="none" stroke="#2B2A26" stroke-width="3.4"/></svg></div><figcaption class="mm-cap"><span class="mm-n">6</span>젤리팩 올리기</figcaption></figure>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">7</text><use href="#mface" transform="translate(0 0)"/><use href="#meye" transform="translate(392 354)"/><use href="#meye" transform="translate(512 354)"/><rect x="336" y="316" width="228" height="78" rx="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><line x1="450" y1="316" x2="450" y2="394" stroke="#B9B2A4" stroke-width="3" stroke-linecap="round"/><use href="#mhand" transform="translate(276 300) rotate(-96) scale(0.64 0.64)"/><use href="#mhand" transform="translate(628 300) rotate(96) scale(-0.64 0.64)"/></svg></div><figcaption class="mm-cap"><span class="mm-n">7</span>눈 보호</figcaption></figure>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">8</text><path d="M 348.5 451.6 C 343.4 355.3, 395 308.8, 450 308.8 C 505 308.8, 556.6 355.3, 551.5 451.6 C 546.3 546.2, 503.3 615, 450 615 C 396.7 615, 353.7 546.2, 348.5 451.6 Z" fill="none" stroke="#2B2A26" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M 346.8 425.8 C 321 322.6, 389.8 271, 450 271 C 510.2 271, 579 322.6, 553.2 425.8" fill="none" stroke="#B9B2A4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="262" y="150" width="376" height="138" rx="20" fill="none" stroke="#2B2A26" stroke-width="3.4"/><line x1="296" y1="288" x2="296" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><line x1="342" y1="288" x2="342" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><line x1="388" y1="288" x2="388" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><line x1="434" y1="288" x2="434" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><line x1="480" y1="288" x2="480" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><line x1="526" y1="288" x2="526" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><line x1="572" y1="288" x2="572" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><line x1="618" y1="288" x2="618" y2="336" stroke="#5F7359" stroke-width="3" stroke-linecap="round"/><text x="450" y="219" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="44" font-weight="500" fill="#5F7359">15′</text><use href="#mhand" transform="translate(300 590) rotate(-104) scale(0.62 0.62)"/><use href="#mhand" transform="translate(600 590) rotate(104) scale(-0.62 0.62)"/><rect x="700" y="652" width="164" height="206" rx="14" fill="none" stroke="#2B2A26" stroke-width="3.4"/><line x1="726" y1="704" x2="838" y2="704" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round"/><line x1="726" y1="742" x2="838" y2="742" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round"/><line x1="726" y1="780" x2="796" y2="780" stroke="#B9B2A4" stroke-width="2.6" stroke-linecap="round"/></svg></div><figcaption class="mm-cap"><span class="mm-n">8</span>LED 15분</figcaption></figure>
-    <div class="mm-sec">3 · 맞춤 케어</div>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">9</text><use href="#mface" transform="translate(0 0)"/><use href="#mcotton" transform="translate(374 430)"/><use href="#mcotton" transform="translate(530 430)"/><use href="#mhand" transform="translate(374 430) rotate(-118) scale(0.62 0.62)"/><use href="#mhand" transform="translate(530 430) rotate(118) scale(-0.62 0.62)"/><use href="#mbottle" transform="translate(790 662.8)"/><use href="#mdrop" transform="translate(761 552)"/><use href="#mdrop" transform="translate(790 540.3)"/><use href="#mdrop" transform="translate(819 552)"/></svg></div><figcaption class="mm-cap"><span class="mm-n">9</span>토너로 정리</figcaption></figure>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">10</text><use href="#mface" transform="translate(0 0)"/><circle cx="452" cy="414" r="12" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="390" cy="352" r="12" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="514" cy="352" r="12" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="452" cy="502" r="12" fill="none" stroke="#5F7359" stroke-width="3"/><use href="#mhand" transform="translate(452 300) rotate(180) scale(0.62 0.62)"/><use href="#mbottle" transform="translate(150 710.9) scale(0.85)"/><use href="#mjar" transform="translate(374 718.2)"/><use href="#mjar" transform="translate(586 718.2)"/><line x1="216" y1="706" x2="320" y2="706" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 320 706 L 306.3 712.1 M 320 706 L 306.3 699.9" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="444" y1="706" x2="528" y2="706" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 528 706 L 514.3 712.1 M 528 706 L 514.3 699.9" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><figcaption class="mm-cap"><span class="mm-n">10</span>앰플 · 크림</figcaption></figure>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">11</text><use href="#mface" transform="translate(0 0)"/><use href="#meye" transform="translate(392 354)"/><use href="#meye" transform="translate(512 354)"/><path d="M 342 396 C 318 476, 350 570, 450 570 C 550 570, 582 476, 558 396 Z" fill="none" stroke="#5F7359" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="374" y1="432" x2="374" y2="522" stroke="#5F7359" stroke-width="2.4" stroke-linecap="round"/><line x1="412" y1="432" x2="412" y2="522" stroke="#5F7359" stroke-width="2.4" stroke-linecap="round"/><line x1="450" y1="432" x2="450" y2="522" stroke="#5F7359" stroke-width="2.4" stroke-linecap="round"/><line x1="488" y1="432" x2="488" y2="522" stroke="#5F7359" stroke-width="2.4" stroke-linecap="round"/><line x1="526" y1="432" x2="526" y2="522" stroke="#5F7359" stroke-width="2.4" stroke-linecap="round"/><g transform="rotate(-22 722 438)"><use href="#mspatula" transform="translate(722 438)"/></g><use href="#mhand" transform="translate(722 340) rotate(152) scale(-0.7 0.7)"/><line x1="290" y1="354" x2="342" y2="354" stroke="#2B2A26" stroke-width="3" stroke-linecap="round" stroke-dasharray="9 9"/><line x1="560" y1="354" x2="614" y2="354" stroke="#2B2A26" stroke-width="3" stroke-linecap="round" stroke-dasharray="9 9"/></svg></div><figcaption class="mm-cap"><span class="mm-n">11</span>모델링 팩</figcaption></figure>
-    <div class="mm-sec">4 · 피니쉬 터치</div>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">12</text><path d="M 331.8 374 C 326.4 273.2, 380.4 224.6, 438 224.6 C 495.6 224.6, 549.6 273.2, 544.2 374 C 538.8 473, 493.8 545, 438 545 C 382.2 545, 337.2 473, 331.8 374 Z" fill="none" stroke="#2B2A26" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M 330 347 C 303 239, 375 185, 438 185 C 501 185, 573 239, 546 347" fill="none" stroke="#B9B2A4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="438" cy="308" r="10" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="438" cy="392" r="10" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="378" cy="470" r="10" fill="none" stroke="#5F7359" stroke-width="3"/><circle cx="500" cy="470" r="10" fill="none" stroke="#5F7359" stroke-width="3"/><use href="#mhand" transform="translate(438 300) rotate(180) scale(0.6 0.6)"/><use href="#mbottle" transform="translate(180 238) scale(0.72)"/><use href="#mjar" transform="translate(180 456.3) scale(1.033)"/><use href="#mbottle" transform="translate(180 662) scale(0.72)"/><line x1="180" y1="320" x2="180" y2="388" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 180 388 L 173.9 374.3 M 180 388 L 186.1 374.3" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="180" y1="516" x2="180" y2="592" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 180 592 L 173.9 578.3 M 180 592 L 186.1 578.3" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><figcaption class="mm-cap"><span class="mm-n">12</span>마무리 제품</figcaption></figure>
-    <div class="mm-sec">5 · 마무리</div>
-    <figure class="mm-card" onclick="mmOpen(this)"><div class="mm-art"><svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="900" height="900" fill="#F7F4EE"/><circle cx="74" cy="74" r="36" fill="none" stroke="#2B2A26" stroke-width="3.4"/><text x="74" y="74" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-size="34" font-weight="500" fill="#2B2A26">13</text><rect x="210" y="330" width="300" height="190" rx="12" fill="none" stroke="#2B2A26" stroke-width="3.4"/><line x1="250" y1="398" x2="470" y2="398" stroke="#B9B2A4" stroke-width="2.8" stroke-linecap="round"/><line x1="250" y1="438" x2="400" y2="438" stroke="#B9B2A4" stroke-width="2.8" stroke-linecap="round"/><use href="#mhand" transform="translate(300 600) rotate(-24) scale(0.9 0.9)"/><rect x="560" y="330" width="268" height="180" rx="12" fill="none" stroke="#2B2A26" stroke-width="3.4"/><path d="M 560 342 L 694 434 L 828 342" fill="none" stroke="#2B2A26" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="524" y1="420" x2="556" y2="420" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round"/><path d="M 556 420 L 542.3 426.1 M 556 420 L 542.3 413.9" fill="none" stroke="#5F7359" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><figcaption class="mm-cap"><span class="mm-n">13</span>명함 · 전문가 팁</figcaption></figure>
-    <div class="mm-note">
-      <h3>그림에 담지 않은 것 — 몸으로 기억하기</h3>
-      <ul>
-        <li><b>압</b> — 내 얼굴에 바를 때보다 3배 이상 살며시. 약지로 바르는 느낌.</li>
-        <li><b>양</b> — 고객 상태와 얼굴 크기에 따라 달라집니다. 넘치게 바르면 불편해합니다.</li>
-        <li><b>위생</b> — 손소독 항시. 제품을 손으로 직접 만져 오염시키지 않기.</li>
-        <li><b>턱 아래</b> — 팩·젤리가 흘러내리는지 매 단계 확인.</li>
-        <li><b>폐쇄공포</b> — 모델링은 눈 위 화장솜을 덮지 않습니다.</li>
-        <li><b>메일</b> — 오늘 안에 전문가 팁이 간다고 안내. 스팸함에도 없으면 연락 달라고.</li>
-      </ul>
-    </div>
-    <a class="mm-link" href="https://unehana0880-crypto.github.io/laurel-staff/" target="_blank" rel="noopener">🤍 단계별 자세한 설명 · 오늘 루틴 앱 열기</a>
-    <div style="height:18px"></div>
-  </div>
-  <div class="mm-zoom" id="mmZoom" onclick="mmClose()"><div class="mm-zoom-in" id="mmZoomIn"></div><div class="mm-zoom-cap" id="mmZoomCap"></div><div class="mm-zoom-x">화면을 누르면 닫힙니다</div></div>
 </div>
+<!-- ═══════ CARE (페이셜) ═══════ -->
+@@ -841,8 +878,10 @@
+let STAFF  = {};          // schedule/staff 를 그대로 씀 (이름은 스케줄 앱에서 관리)
+let CHECKS = {};          // 오늘의 체크
+let TODAY  = dayKey(new Date());
+let WEEK   = {};          // 이번 주 주간 청소 기록
+let WEEK   = {};          // 이번 주 청소 기록
+let MONTH  = {};          // 이번 달 청소 기록
+let MONDAY = mondayKey(new Date());
+let MONKEY = monthKey(new Date());
+let ME = null;
+try { ME = localStorage.getItem('laurel_me') || null; } catch(e){}
 
-<div class="tabbar">
-  <button class="tab active" id="tab-today" onclick="goTab('today')"><span class="ti">☀️</span><span class="tl">오늘</span></button>
-  <button class="tab" id="tab-cal" onclick="goTab('cal')"><span class="ti">📅</span><span class="tl">캘린더</span></button>
-  <button class="tab t-plus" onclick="openModal()"><span class="ti" style="color:white;font-size:24px">+</span><span class="tl">추가</span></button>
-  <button class="tab" id="tab-day" onclick="goTab('day')"><span class="ti">📋</span><span class="tl">날짜별</span></button>
-  <button class="tab" id="tab-manual" onclick="goTab('manual')"><span class="ti">📖</span><span class="tl">시술</span></button>
-</div>
-
-<div class="share-popup" id="sharePopup" onclick="if(event.target===this)closeShare()">
-  <div class="share-sheet">
-    <div class="share-handle"></div>
-    <div class="share-title" id="shareTitle">예약 현황 공유</div>
-    <div class="share-text" id="shareText"></div>
-    <div class="share-btns">
-      <button class="share-btn sb-copy" onclick="copyShare()">📋 텍스트 복사 (카카오/왓츠앱 붙여넣기)</button>
-      <button class="share-btn sb-close" onclick="closeShare()">닫기</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-hdr">
-      <div class="sheet-title"><span id="sheetTitle">예약 추가</span><span class="edit-chip" id="editChip" style="display:none">수정 중</span></div>
-      <button class="btn-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div id="sheetAlert"></div>
-      <div class="fg"><label>날짜</label><input type="date" id="mDate" onchange="onDateChange()"></div>
-
-      <div class="fg">
-        <label>시간</label>
-        <div class="time-grid" id="timePicker"></div>
-        <div class="min-grid" id="minPicker"></div>
-        <div class="picked-time" id="pickedTime"></div>
-      </div>
-
-      <div class="fg"><label>소요시간</label>
-        <select id="mDur" onchange="onDurChange()">
-          <option value="">프로그램 기준 자동</option>
-          <option value="30">30분</option><option value="40">40분</option>
-          <option value="50">50분</option><option value="60">60분</option>
-          <option value="70">70분</option><option value="90">90분</option><option value="120">120분</option>
-        </select>
-      </div>
-
-      <div class="fg"><label>룸</label>
-        <div class="room-picker">
-          <div class="rpick" id="rp8" onclick="pickRoom(8)"><div class="rn">4층</div><div class="rl">8명</div></div>
-          <div class="rpick" id="rp6" onclick="pickRoom(6)"><div class="rn">3층</div><div class="rl">6명</div></div>
-          <div class="rpick" id="rp2" onclick="pickRoom(2)"><div class="rn">바디</div><div class="rl">2명</div></div>
-        </div>
-      </div>
-      <div class="fg"><label>인원</label><select id="mPax" onchange="checkCap()"><option value="">룸 먼저 선택</option></select></div>
-      <div class="fg">
-        <label>베드 번호 배정</label>
-        <div class="bed-picker" id="bedPicker"><div id="bedButtons"></div></div>
-        <div id="bedHint" style="font-size:11px;color:var(--mid);margin-top:4px;">룸과 시간을 선택하면 베드를 배정할 수 있어요</div>
-      </div>
-      <div class="fg"><label>이름 (선택)</label><input type="text" id="mName" placeholder="고객 이름"></div>
-      <div class="fg"><label>언어 (선택)</label>
-        <select id="mLang"><option value="">모름/미정</option><option>영어</option><option>일본어</option><option>중국어</option><option>스페인어</option><option>프랑스어</option><option>독일어</option><option>아랍어</option><option>히브리어</option><option>한국어</option><option>기타</option></select>
-      </div>
-      <div class="fg"><label>프로그램 (선택)</label>
-        <select id="mProgram" onchange="onProgramChange()"><option value="">모름/미정</option><option>기본 케어 50분</option><option>프리미엄 케어 60분</option><option>퍼스널 피부 컨설팅 90분</option><option>바디 케어</option><option>미백 케어</option><option>속눈썹펌</option><option>부채 그림 &amp; 캘리그라피 클래스</option></select>
-      </div>
-      <div class="fg"><label>예약 경로</label>
-        <select id="mSource"><option value="">선택</option><option>Airbnb</option><option>Klook</option><option>KKday</option><option>Instagram DM</option><option>WhatsApp</option><option>Website</option><option>KakaoTalk</option><option>Acuity</option><option>Frip</option><option>솜씨당</option><option>Naver</option><option>Trazy</option><option>직접 방문</option><option>기타</option></select>
-      </div>
-      <div class="fg"><label>메모 (선택)</label><input type="text" id="mNote" placeholder="특이사항"></div>
-    </div>
-    <div class="sheet-foot" id="sheetFoot"></div>
-  </div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA0nJAcOV64dq2QT2BVSsGxis99VTA2eEI",
-  authDomain: "laurel-studio.firebaseapp.com",
-  databaseURL: "https://laurel-studio-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "laurel-studio",
-  storageBucket: "laurel-studio.firebasestorage.app",
-  messagingSenderId: "516403607342",
-  appId: "1:516403607342:web:5389cdfe397afcee1cacbf"
-};
-const app = initializeApp(firebaseConfig);
-const db  = getDatabase(app);
-const auth = getAuth(app);
-
-/* ═══════════ 로그인 관문 ═══════════
-   여기서 멈춰 서서 로그인이 끝날 때까지 기다린다.
-   아래 코드는 로그인이 확인된 뒤에야 실행된다. 기존 로직은 손대지 않았다. */
-await (async function requireLogin(){
-  await setPersistence(auth, browserLocalPersistence);   // 한 번 로그인하면 브라우저가 기억
-
-  const already = await new Promise(function(res){
-    const stop = onAuthStateChanged(auth, function(u){ stop(); res(u); });
-  });
-  if(already) { mountSignOut(); return; }
-
-  const box = document.createElement('div');
-  box.id = 'laurel-login';
-  box.innerHTML =
-    '<style>'
-    + '#laurel-login{position:fixed;inset:0;z-index:99999;background:#faf9f7;display:flex;align-items:center;justify-content:center;padding:20px;'
-    + 'font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;}'
-    + '#laurel-login .card{width:100%;max-width:340px;background:#fff;border:1px solid #e5e1da;border-radius:10px;padding:32px 26px;box-shadow:0 2px 14px rgba(0,0,0,.05);}'
-    + '#laurel-login h1{font-size:17px;margin:0 0 4px;color:#2f2b26;letter-spacing:.3px;}'
-    + '#laurel-login p.sub{font-size:12.5px;color:#8c857c;margin:0 0 22px;}'
-    + '#laurel-login label{display:block;font-size:11.5px;color:#8c857c;margin:0 0 5px;}'
-    + '#laurel-login input{width:100%;box-sizing:border-box;padding:11px 12px;font-size:15px;border:1px solid #ded9d1;border-radius:6px;margin-bottom:14px;font-family:inherit;background:#fff;color:#2f2b26;}'
-    + '#laurel-login input:focus{outline:none;border-color:#a89880;}'
-    + '#laurel-login button{width:100%;padding:12px;font-size:14.5px;border:0;border-radius:6px;background:#3f3a33;color:#fff;cursor:pointer;font-family:inherit;}'
-    + '#laurel-login button:disabled{opacity:.55;cursor:default;}'
-    + '#laurel-login .err{font-size:12.5px;color:#c0392b;min-height:17px;margin-top:11px;line-height:1.45;}'
-    + '</style>'
-    + '<div class="card">'
-    + '<h1>Laurel Studio</h1>'
-    + '<p class="sub">매장 계정으로 로그인해 주세요</p>'
-    + '<label>이메일</label><input id="lg-id" type="email" autocomplete="username" autocapitalize="off" spellcheck="false">'
-    + '<label>비밀번호</label><input id="lg-pw" type="password" autocomplete="current-password">'
-    + '<button id="lg-go">로그인</button>'
-    + '<div class="err" id="lg-err"></div>'
-    + '</div>';
-  document.body.appendChild(box);
-
-  const idEl = box.querySelector('#lg-id');
-  const pwEl = box.querySelector('#lg-pw');
-  const btn  = box.querySelector('#lg-go');
-  const err  = box.querySelector('#lg-err');
-  idEl.focus();
-
-  await new Promise(function(done){
-    async function attempt(){
-      const id = idEl.value.trim(), pw = pwEl.value;
-      if(!id || !pw){ err.textContent = '이메일과 비밀번호를 모두 입력해 주세요'; return; }
-      btn.disabled = true; btn.textContent = '확인 중...'; err.textContent = '';
-      try{
-        await signInWithEmailAndPassword(auth, id, pw);
-        box.remove();
-        mountSignOut();
-        done();
-      }catch(e){
-        const c = e && e.code || '';
-        err.textContent =
-          (c === 'auth/invalid-email')                              ? '이메일 형식이 올바르지 않아요' :
-          (c === 'auth/too-many-requests')                          ? '시도가 너무 많아요 — 잠시 후 다시 해주세요' :
-          (c === 'auth/network-request-failed')                     ? '인터넷 연결을 확인해 주세요' :
-          (c === 'auth/user-disabled')                              ? '사용 중지된 계정이에요' :
-                                                                      '이메일 또는 비밀번호가 맞지 않아요';
-        btn.disabled = false; btn.textContent = '로그인';
-        pwEl.value = ''; pwEl.focus();
-      }
-    }
-    btn.addEventListener('click', attempt);
-    box.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') attempt(); });
-  });
-})();
-
-/* 헤더 구석에 작은 로그아웃 버튼 — 직원이 바뀌었을 때만 쓴다 */
-function mountSignOut(){
-  if(document.getElementById('laurel-signout')) return;
-  const b = document.createElement('button');
-  b.id = 'laurel-signout';
-  b.textContent = '로그아웃';
-  b.style.cssText = 'position:fixed;right:10px;bottom:74px;z-index:9998;padding:6px 11px;font-size:11px;'
-    + 'border:1px solid rgba(0,0,0,.16);border-radius:14px;background:rgba(255,255,255,.9);color:#7a736a;'
-    + 'cursor:pointer;font-family:inherit;backdrop-filter:blur(4px);';
-  b.onclick = function(){ if(confirm('로그아웃할까요?\n다음에 열 때 다시 로그인해야 합니다.')) signOut(auth).then(function(){ location.reload(); }); };
-  document.body.appendChild(b);
+@@ -854,6 +893,7 @@
+x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+return dayKey(x);
+}
+function monthKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function mmdd(ms){ const d = new Date(ms); return (d.getMonth()+1)+'/'+d.getDate(); }
+function hhmm(ms){
+const d = new Date(ms);
+@@ -904,8 +944,13 @@
 }
 
-/* ═══════════ 상수 ═══════════ */
-var HOURS=[10,11,12,13,14,15,16,17,18,19];
-var HOUR_LBL=['오전 10시','오전 11시','오후 12시','오후 1시','오후 2시','오후 3시','오후 4시','오후 5시','오후 6시','오후 7시'];
-var MINUTES=[0,10,20,30,40,50];
-var CLOSE_MIN=(HOURS[HOURS.length-1]+1)*60;
+/* ═══════ 화면 그리기 ═══════ */
+function weekHits(id){
+  const v = WEEK[id];
+function bucketOf(el){
+  return el.dataset.freq === 'm'
+    ? { store: MONTH, path: 'staffcheck/month/' + MONKEY, unit: '이번 달' }
+    : { store: WEEK,  path: 'staffcheck/week/'  + MONDAY, unit: '이번 주' };
+}
+function weekHits(el){
+  const v = bucketOf(el).store[el.dataset.id];
+if (!v) return [];
+return Object.keys(v).map(k => Object.assign({ _k:k }, v[k]))
+.filter(x => x && x.at).sort((a,b) => a.at - b.at);
+@@ -932,7 +977,8 @@
 
-var ROOM_CAP={8:8,6:6,2:2};
-var TOTAL_CAP=ROOM_CAP[8]+ROOM_CAP[6]+ROOM_CAP[2];
-var ZONE_LABEL={8:'4층',6:'3층',2:'바디'};
-function zoneLabel(r){ return ZONE_LABEL[r]||(r+'인'); }
+function paintWeekly(el){
+const goal = Math.max(1, parseInt(el.dataset.goal || '1', 10));
+  const hits = weekHits(el.dataset.id);
+  const hits = weekHits(el);
+  const unit = bucketOf(el).unit;
+const w = el.querySelector('.wk');
+const b = el.querySelector('.by');
+if (b) b.style.display = 'none';
+@@ -946,7 +992,7 @@
+if (goal === 1){
+w.textContent = hits.length
+? (hits[hits.length-1].init || '') + ' · ' + mmdd(hits[hits.length-1].at)
+      : '이번 주';
+      : unit;
+} else {
+const seen = [];
+hits.forEach(h => { const k = h.init || ''; if (k && seen.indexOf(k) < 0) seen.push(k); });
+@@ -1009,22 +1055,24 @@
+async function tapWeekly(el, s){
+const id = el.dataset.id;
+const goal = Math.max(1, parseInt(el.dataset.goal || '1', 10));
+  const hits = weekHits(id);
+  const hits = weekHits(el);
+  const bk = bucketOf(el);
+const lb = el.querySelector('.lbl');
+const label = (lb ? lb.textContent : '').replace(/\s+/g,' ').trim().slice(0, 60);
 
-var PROGRAM_DUR={'기본 케어 50분':50,'프리미엄 케어 60분':60,'퍼스널 피부 컨설팅 90분':90,'바디 케어':90,'미백 케어':50,'속눈썹펌':60,'부채 그림 & 캘리그라피 클래스':60};
-var DEFAULT_DUR=60;
-
-var SRC_CLS={'Airbnb':'src-abnb','Klook':'src-klook','KKday':'src-klook','Instagram DM':'src-ig','WhatsApp':'src-wa','Website':'src-web','KakaoTalk':'src-kkt','Acuity':'src-web','Frip':'src-web','솜씨당':'src-web','Naver':'src-web','Trazy':'src-klook'};
-var CLASS_PROGRAMS=['부채 그림 & 캘리그라피 클래스'];
-
-/* ═══════════ 정규화 ═══════════ */
-function normalizeProgram(p){
-  if(!p) return p;
-  var s=String(p).toLowerCase();
-  if(s.indexOf('부채')!==-1||s.indexOf('캘리그라피')!==-1||s.indexOf('calligraphy')!==-1||s.indexOf('fan')!==-1) return '부채 그림 & 캘리그라피 클래스';
-  if(s.indexOf('바디')!==-1||s.indexOf('body')!==-1||s.indexOf('데콜테')!==-1||s.indexOf('décolleté')!==-1||s.indexOf('decollete')!==-1) return '바디 케어';
-  if(s.indexOf('미백')!==-1||s.indexOf('whitening')!==-1) return '미백 케어';
-  if(s.indexOf('속눈썹')!==-1||s.indexOf('lash')!==-1) return '속눈썹펌';
-  if(s.indexOf('프리미엄')!==-1||s.indexOf('premium')!==-1) return '프리미엄 케어 60분';
-  if(s.indexOf('컨설팅')!==-1||s.indexOf('consult')!==-1||s.indexOf('personal')!==-1) return '퍼스널 피부 컨설팅 90분';
-  if(s.indexOf('시그니처')!==-1||s.indexOf('signature')!==-1||s.indexOf('기본')!==-1||s.indexOf('베이직')!==-1||s.indexOf('basic')!==-1) return '기본 케어 50분';
-  /* 숫자는 '분/min' 단위가 붙어 있을 때만 프로그램으로 읽는다 (가격·날짜 오인 방지) */
-  var num=s.match(/(\d{2,3})\s*(분|min|mins|minute|minutes)/);
-  if(num){
-    var n=parseInt(num[1]);
-    if(n>=85) return '퍼스널 피부 컨설팅 90분';
-    if(n>=55) return '프리미엄 케어 60분';
-    if(n>=45) return '기본 케어 50분';
-  }
-  return p;
+if (hits.length >= goal){
+const last = hits[hits.length-1];
+const who = last.name || '';
+    if (!confirm('이미 이번 주 ' + goal + '번 다 했습니다.\n마지막 기록(' + who + ' · ' + mmdd(last.at) + ')을 취소할까요?')) return;
+    try { await remove(ref(db, 'staffcheck/week/' + MONDAY + '/' + id + '/' + last._k)); }
+    if (!confirm('이미 ' + bk.unit + ' ' + goal + '번 다 했습니다.\n마지막 기록(' + who + ' · ' + mmdd(last.at) + ')을 취소할까요?')) return;
+    try { await remove(ref(db, bk.path + '/' + id + '/' + last._k)); }
+catch(e){ status('err'); }
+return;
 }
-function normalizeRoom(r,program){
-  var n=parseInt(r);
-  if(n===4) return 6;
-  if(n===8||n===6||n===2) return n;
-  if(program==='바디 케어') return 2;   // 룸 정보 없는 외부 예약
-  return 6;
-}
-function normalizeSource(s){
-  if(!s) return '';
-  var v=String(s).toLowerCase();
-  if(v==='airbnb') return 'Airbnb';
-  if(v==='acuity') return 'Acuity';
-  if(v==='klook') return 'Klook';
-  return s;
-}
-/* ISO 문자열이 타임존(Z·+09:00)을 달고 오면 로컬 시각으로 환산한다.
-   예: 2026-08-24T04:30:00Z → date 2026-08-24 / slot 13:30 (KST) */
-function isoParts(v){
-  var s=String(v==null?'':v).trim();
-  if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(s)) return null;
-  if(/(Z|[+\-]\d{2}:?\d{2})$/.test(s)){
-    var d=new Date(s);
-    if(!isNaN(d.getTime())){
-      return { date: fmt(d.getFullYear(),d.getMonth(),d.getDate()),
-               slot: String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0') };
-    }
-  }
-  return { date: s.slice(0,10), slot: s.slice(11,16) };   // 타임존 없으면 적힌 그대로가 로컬
-}
-/* "13:10","13시 10분","1:10 PM","오후 4:30" → "HH:MM" (분을 반올림하지 않는다) */
-function parseTime(v){
-  if(v===undefined||v===null) return null;
-  var s=String(v).trim();
-  var ip=isoParts(s); if(ip) return ip.slot;
-  var m=s.match(/(\d{1,2})\s*[:시]\s*(\d{1,2})?/);
-  if(!m) return null;
-  var hh=parseInt(m[1]), mm=m[2]?parseInt(m[2]):0;
-  if(/pm|오후/i.test(s)&&hh<12) hh+=12;
-  if(/am|오전/i.test(s)&&hh===12) hh=0;
-  if(mm>59) mm=59;
-  if(hh>23) hh=23;
-  return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
-}
-
-/* ═══════════ 출력 안전 ═══════════ */
-var ESC_MAP={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
-function esc(v){ return String(v==null?'':v).replace(/[&<>"']/g,function(c){return ESC_MAP[c];}); }
-function jsq(v){ return esc(JSON.stringify(String(v==null?'':v))); }   // onclick 인자용
-
-/* ═══════════ 시간 유틸 ═══════════ */
-function toMin(t){ var p=String(t||'0:0').split(':'); return (parseInt(p[0])||0)*60+(parseInt(p[1])||0); }
-function toStr(m){ return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
-function getDur(b){ return parseInt(b.dur)||PROGRAM_DUR[b.program]||DEFAULT_DUR; }
-function hourOf(t){ return Math.floor(toMin(t)/60); }
-function isValidSlot(s){ return /^\d{1,2}:\d{2}$/.test(String(s||'')); }
-
-/* ═══════════ 상태 ═══════════ */
-var bookings=[], byDate={}, selY=new Date().getFullYear(), selM=new Date().getMonth(), selDate=null;
-function ofDate(date){ return byDate[date]||[]; }
-function reindex(){
-  byDate={};
-  bookings.forEach(function(b){ (byDate[b.date]||(byDate[b.date]=[])).push(b); });
-}
-var mRoom=null, mSlot=null, mHour=null, mMin=null, editId=null, editBase=0, mBeds=[];
-/* G: 두 기기에서 같은 초를 눌러도 겹치지 않는 id */
-function newId(){ return 'bk'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-
-function getTODAY(){ var n=new Date(); return fmt(n.getFullYear(),n.getMonth(),n.getDate()); }
-function fmt(y,m,d){ return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
-
-/* ═══════════ 겹침 기반 점유 ═══════════ */
-function bksOverlap(date,startMin,dur,room,excl){
-  var end=startMin+dur;
-  return ofDate(date).filter(function(b){
-    if(excl&&b.id===excl) return false;
-    if(room!==undefined&&room!==null&&b.room!==room) return false;
-    if(!isValidSlot(b.slot)) return false;
-    var bs=toMin(b.slot), be=bs+getDur(b);
-    return bs<end&&be>startMin;
-  });
-}
-function roomRemAt(date,startMin,dur,room,excl){
-  var used=bksOverlap(date,startMin,dur,room,excl).reduce(function(s,b){return s+(parseInt(b.pax)||1);},0);
-  return ROOM_CAP[room]-used;
-}
-function roomRemHour(date,hour,room,excl){
-  var min=ROOM_CAP[room];
-  MINUTES.forEach(function(mm){
-    var r=roomRemAt(date,hour*60+mm,10,room,excl);
-    if(r<min) min=r;
-  });
-  return min;
-}
-function hourBks(date,hour,room){
-  return ofDate(date).filter(function(b){
-    if(!isValidSlot(b.slot)) return false;
-    if(room!==undefined&&b.room!==room) return false;
-    return hourOf(b.slot)===hour;
-  }).sort(function(a,b){ return toMin(a.slot)-toMin(b.slot); });
-}
-function dayStatus(date){
-  var full=0, total=HOURS.length*3;
-  HOURS.forEach(function(h){
-    if(roomRemHour(date,h,8)<=0) full++;
-    if(roomRemHour(date,h,6)<=0) full++;
-    if(roomRemHour(date,h,2)<=0) full++;
-  });
-  return full===0?'none':full===total?'full':'partial';
-}
-function takenBeds(date,slot,room,exclId,dur){
-  var beds=[];
-  bksOverlap(date,toMin(slot),dur||DEFAULT_DUR,room,exclId).forEach(function(b){
-    if(b.beds&&b.beds.length) beds=beds.concat(b.beds);
-  });
-  return beds;
-}
-
-/* ═══════════ 베드 ═══════════ */
-function curDur(){
-  var v=parseInt(document.getElementById('mDur').value);
-  if(v) return v;
-  return PROGRAM_DUR[document.getElementById('mProgram').value]||DEFAULT_DUR;
-}
-function renderBedPicker(){
-  var picker=document.getElementById('bedPicker'), hint=document.getElementById('bedHint'), btnsEl=document.getElementById('bedButtons');
-  var date=document.getElementById('mDate').value;
-  if(!mRoom||!mSlot||!date){ picker.classList.remove('visible'); hint.textContent='룸과 시간을 선택하면 베드를 배정할 수 있어요'; return; }
-  picker.classList.add('visible');
-  var maxBed=mRoom, taken=takenBeds(date,mSlot,mRoom,editId,curDur());
-  var pax=parseInt(document.getElementById('mPax').value)||0;
-  var html='<div class="bed-room-label">🛏️ '+zoneLabel(mRoom)+' 베드 선택'+(pax?' ('+pax+'명 → '+pax+'개 선택)':'')+'</div><div class="bed-grid">';
-  for(var i=1;i<=maxBed;i++){
-    var isTaken=taken.indexOf(i)!==-1, isActive=mBeds.indexOf(i)!==-1;
-    html+='<button class="bed-btn'+(isActive?' active':'')+(isTaken?' overlap':'')+'" onclick="toggleBed('+i+')">'+i+'</button>';
-  }
-  html+='</div>';
-  btnsEl.innerHTML=html;
-  hint.innerHTML=taken.length?'<span style="color:var(--yellow)">노란 베드는 시간이 겹쳐요 — 필요하면 그대로 배정 가능</span>':'';
-}
-window.toggleBed=function(num){
-  var i=mBeds.indexOf(num);
-  if(i!==-1) mBeds.splice(i,1); else mBeds.push(num);
-  mBeds.sort(function(a,b){return a-b;});
-  renderBedPicker();
-};
-
-/* ═══════════ 동기화 ═══════════ */
-function setSyncStatus(st){
-  var dot=document.getElementById('syncDot'), label=document.getElementById('syncLabel');
-  if(st==='connected'){ dot.className='sync-dot connected'; label.textContent='실시간 동기화 중'; }
-  else if(st==='syncing'){ dot.className='sync-dot syncing'; label.textContent='저장 중...'; }
-  else if(st==='error'){ dot.className='sync-dot error'; label.textContent='연결 오류 — 재시도 중'; }
-  else { dot.className='sync-dot'; label.textContent='Firebase 연결 중...'; }
-}
-
-onValue(ref(db,'bookings'),(snap)=>{
-  const data=snap.val()||{};
-  bookings=Object.keys(data).map(function(key){
-    var b=Object.assign({},data[key]);
-    if(!b.id) b.id=key;                                   // 외부 스크립트가 넣은 레코드
-    b.pax=parseInt(b.pax)||1;
-    b.program=normalizeProgram(b.program||b.service);      // Airbnb는 service 필드
-    var ip=b.startIso?isoParts(b.startIso):null;
-    var t=parseTime(b.slot)||parseTime(b.time)||(ip?ip.slot:null);
-    if(t) b.slot=t;
-    if(!b.date&&ip) b.date=ip.date;                        // UTC면 로컬 날짜로 환산된 값
-    if(!b.dur&&b.startIso&&b.endIso){
-      var d=(new Date(b.endIso)-new Date(b.startIso))/60000;
-      if(d>0&&d<400) b.dur=Math.round(d);
-    }
-    b.dur=parseInt(b.dur)||PROGRAM_DUR[b.program]||DEFAULT_DUR;
-    var rawRoom=parseInt(b.room);
-    b.roomGuessed=!(rawRoom===8||rawRoom===6||rawRoom===4||rawRoom===2);   // 룸 정보 없이 들어온 예약
-    b.room=normalizeRoom(b.room,b.program);
-    if(b.roomGuessed&&b.program==='바디 케어') b.roomGuessed=false;        // 바디는 룸이 정해져 있음
-    b.source=normalizeSource(b.source);
-    return b;
-  });
-  reindex();
-  renderAll();
-  setSyncStatus('connected');
-}, function(err){
-  setSyncStatus('error');
-  console.error('[laurel] 예약 구독 실패', err);
+try {
+    await push(ref(db, 'staffcheck/week/' + MONDAY + '/' + id), {
+    await push(ref(db, bk.path + '/' + id), {
+by: ME, name: s.name, init: initOf(s), order: s.order || 1,
+      at: Date.now(), tab: el.dataset.tab, label: label, goal: goal
+      at: Date.now(), tab: el.dataset.tab, label: label, goal: goal,
+      freq: el.dataset.freq
 });
-
-async function saveToFirebase(bk){
-  setSyncStatus('syncing');
-  try{ await set(ref(db,'bookings/'+bk.id),bk); }
-  catch(e){ setSyncStatus('error'); console.error('[laurel] 저장 실패',e); throw e; }
-}
-async function deleteFromFirebase(id){
-  setSyncStatus('syncing');
-  try{ await remove(ref(db,'bookings/'+id)); }
-  catch(e){ setSyncStatus('error'); console.error('[laurel] 삭제 실패',e); throw e; }
-}
-function renderAll(){ renderCal(); renderToday(); if(selDate) renderDay(); }
-
-/* ═══════════ 탭 ═══════════ */
-function goTab(tab){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-  ['today','cal','day','manual'].forEach(function(t){ var el=document.getElementById('tab-'+t); if(el)el.classList.remove('active'); });
-  if(tab==='today'){ document.getElementById('scrToday').classList.add('active'); document.getElementById('tab-today').classList.add('active'); renderToday(); }
-  if(tab==='cal'){ document.getElementById('scrCal').classList.add('active'); document.getElementById('tab-cal').classList.add('active'); }
-  if(tab==='day'){ document.getElementById('scrDay').classList.add('active'); document.getElementById('tab-day').classList.add('active'); renderDay(); }
-  if(tab==='manual'){ document.getElementById('scrManual').classList.add('active'); document.getElementById('tab-manual').classList.add('active'); }
-}
-/* ═══ 📖 시술 그림 매뉴얼 — 크게 보기 ═══ */
-function mmOpen(fig){
-  var svg = fig.querySelector('svg');
-  var cap = fig.querySelector('.mm-cap');
-  if(!svg) return;
-  var parts = cap ? Array.prototype.map.call(cap.childNodes, function(x){ return (x.textContent||'').trim(); }).filter(Boolean) : [];
-  document.getElementById('mmZoomIn').innerHTML = svg.outerHTML;
-  document.getElementById('mmZoomCap').textContent = parts.join(' · ');
-  document.getElementById('mmZoom').classList.add('on');
-  document.querySelector('.content').scrollTop = document.querySelector('.content').scrollTop;
-}
-function mmClose(){ document.getElementById('mmZoom').classList.remove('on'); }
-window.mmOpen=mmOpen; window.mmClose=mmClose;
-
-
-/* ═══════════ 렌더 ═══════════ */
-function bkMini(b){
-  var sc=SRC_CLS[b.source]||'';
-  var dur=getDur(b);
-  var ov=isValidSlot(b.slot)&&bksOverlap(b.date,toMin(b.slot),dur,b.room,b.id).length>0;
-  var timeStr=isValidSlot(b.slot)?b.slot+'–'+toStr(toMin(b.slot)+dur):'??:??';
-  var bedTag=b.beds&&b.beds.length?'<span class="btag btag-bed">🛏️ '+esc(b.beds.join(','))+'번</span>':'';
-  var isClass=b.program&&CLASS_PROGRAMS.indexOf(b.program)!==-1;
-  var progTag=b.program?'<span class="btag '+(isClass?'btag-class':'')+'">'+(isClass?'🎨 ':'')+esc(b.program)+'</span>':'';
-  var ovTag=ov?'<span class="btag btag-ov">⚠ 겹침</span>':'';
-  var roomTag=b.roomGuessed?'<span class="btag btag-ov">🚪 룸 미정 — 확인 필요</span>':'';
-  return '<div class="bk-mini"><div class="bk-row"><div class="bk-name"><span class="bk-time'+(ov?' bk-ov':'')+'">'+esc(timeStr)+'</span>'+esc(b.name||'이름 미정')+' ('+(parseInt(b.pax)||1)+'명)</div>'
-    +'<div class="bk-acts"><button class="bk-btn" onclick="openEdit('+jsq(b.id)+')">✏️</button><button class="bk-btn" onclick="delB('+jsq(b.id)+')">✕</button></div></div>'
-    +'<div class="bk-tags">'+bedTag+ovTag+roomTag+(b.lang?'<span class="btag">'+esc(b.lang)+'</span>':'')+progTag
-    +(b.source?'<span class="btag '+sc+'">'+esc(b.source)+'</span>':'')+(b.note?'<span class="btag">📝'+esc(b.note)+'</span>':'')+'</div></div>';
-}
-function zoneBlockHTML(date,hour,room){
-  var rem=roomRemHour(date,hour,room), cap=ROOM_CAP[room], used=Math.max(0,cap-rem);
-  var bks=hourBks(date,hour,room);
-  var pips=''; for(var n=1;n<=cap;n++){ pips+='<div class="pip '+(n<=used?'on'+room:'')+'"></div>'; }
-  return '<div class="ts-room"><div class="ts-rlabel"><span class="rb rb'+room+'">'+zoneLabel(room)+'</span> '+rem+'/'+cap+'</div><div class="pips">'+pips+'</div>'
-    +(bks.length?bks.map(bkMini).join(''):'<div class="empty-r">예약 없음</div>')+'</div>';
-}
-function slotCardHTML(date,hour,i){
-  var rem=roomRemHour(date,hour,8)+roomRemHour(date,hour,6)+roomRemHour(date,hour,2);
-  var sc=rem<=0?'ts-full':rem<4?'ts-partial':'ts-open';
-  var sl=rem<=0?'빽빽함':rem<4?'잔여 적음':'예약 가능';
-  return '<div class="ts-card"><div class="ts-hdr"><div class="ts-time">'+HOUR_LBL[i]+'</div><div class="ts-badge '+sc+'">'+sl+'</div>'
-    +'<span style="margin-left:auto;font-size:11px;color:var(--mid);margin-right:6px">'+rem+'/'+TOTAL_CAP+'</span>'
-    +'<button class="ts-add" onclick="openModal(\''+date+'\','+hour+')">+</button></div>'
-    +'<div class="ts-rooms">'+zoneBlockHTML(date,hour,8)+'<div class="ts-divider"></div>'+zoneBlockHTML(date,hour,6)+'<div class="ts-divider"></div>'+zoneBlockHTML(date,hour,2)+'</div></div>';
-}
-function renderToday(){
-  var date=getTODAY(), now=new Date();
-  document.getElementById('todayTitle').textContent=(now.getMonth()+1)+'월 '+now.getDate()+'일 오늘';
-  var todays=ofDate(date);
-  var totalPax=todays.reduce(function(s,b){return s+(parseInt(b.pax)||1);},0);
-  var usedHours=HOURS.filter(function(h){return hourBks(date,h).length>0;}).length;
-  var tight=0;
-  HOURS.forEach(function(h){ if(roomRemHour(date,h,8)<=0&&roomRemHour(date,h,6)<=0&&roomRemHour(date,h,2)<=0) tight++; });
-  document.getElementById('todaySummary').innerHTML=
-    '<div class="sum-card"><div class="sum-num" style="color:var(--room2)">'+totalPax+'</div><div class="sum-label">총 고객 수</div></div>'
-   +'<div class="sum-card"><div class="sum-num" style="color:var(--green)">'+usedHours+'</div><div class="sum-label">예약 시간대</div></div>'
-   +'<div class="sum-card"><div class="sum-num" style="color:var(--red)">'+tight+'</div><div class="sum-label">빽빽한 시간</div></div>';
-  var html=HOURS.map(function(h,i){return slotCardHTML(date,h,i);}).join('');
-  var orphans=todays.filter(function(b){ return !isValidSlot(b.slot)||HOURS.indexOf(hourOf(b.slot))===-1; });
-  if(orphans.length){
-    html+='<div class="ts-card" style="border:2px solid var(--red)"><div class="ts-hdr"><div class="ts-time">⚠️ 시간 미확인 ('+orphans.length+')</div><div class="ts-badge ts-full">확인 필요</div></div><div style="padding:6px 12px 10px">'
-      +orphans.map(function(b){return bkMini(b)+'<div style="font-size:11px;color:var(--mid);margin:-4px 0 10px 4px">raw: "'+esc(b.slot===undefined?'(없음)':b.slot)+'" · id: '+esc(b.id)+'</div>';}).join('')
-      +'</div></div>';
-  }
-  document.getElementById('todaySlots').innerHTML=html;
-}
-var MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-function changeMonth(d){ selM+=d; if(selM>11){selM=0;selY++;} if(selM<0){selM=11;selY--;} renderCal(); }
-function renderCal(){
-  document.getElementById('calLabel').textContent=selY+'년 '+MO[selM];
-  var cells=document.getElementById('calCells'); cells.innerHTML='';
-  var first=new Date(selY,selM,1).getDay(), days=new Date(selY,selM+1,0).getDate(), today=getTODAY();
-  for(var i=0;i<first;i++){ var e=document.createElement('div'); e.className='cal-cell empty'; cells.appendChild(e); }
-  for(var d=1;d<=days;d++){
-    var key=fmt(selY,selM,d), hasB=ofDate(key).length>0, st=hasB?dayStatus(key):'none';
-    var col=st==='full'?'var(--red)':st==='partial'?'var(--accent)':'var(--green)';
-    var el=document.createElement('div');
-    el.className='cal-cell'+(key===today?' today':'')+(selDate===key?' selected':'');
-    el.innerHTML='<div class="cn">'+d+'</div>'+(hasB?'<div class="cbar" style="background:'+col+'"></div>':'');
-    (function(k){ el.onclick=function(){selectDate(k);}; })(key);
-    cells.appendChild(el);
-  }
-}
-function selectDate(key){ selDate=key; renderCal(); goTab('day'); }
-function renderDay(){
-  if(!selDate){ document.getElementById('slotList').innerHTML='<div class="no-sel"><div class="ni">📅</div><p>캘린더에서 날짜를 선택하세요</p></div>'; return; }
-  var p=selDate.split('-'), y=+p[0], m=+p[1], d=+p[2];
-  var dt=new Date(y,m-1,d), wds=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
-  document.getElementById('dayTitle').textContent=m+'월 '+d+'일 ('+wds[dt.getDay()]+')';
-  document.getElementById('slotList').innerHTML=HOURS.map(function(h,i){return slotCardHTML(selDate,h,i);}).join('');
+} catch(e){
+status('err');
+@@ -1100,7 +1148,7 @@
+else { d.className = 'sdot'; l.textContent = '불러오는 중…'; }
 }
 
-/* ═══════════ 공유 ═══════════ */
-function buildShareText(date){
-  var p=date.split('-'), y=+p[0], m=+p[1], d=+p[2];
-  var dt=new Date(y,m-1,d), wds=['일','월','화','수','목','금','토'];
-  var txt='🌿 Laurel Studio 예약 현황\n📅 '+m+'월 '+d+'일 ('+wds[dt.getDay()]+')\n'+'─'.repeat(22)+'\n';
-  var totalPax=0;
-  HOURS.forEach(function(h,i){
-    var bks=hourBks(date,h); if(!bks.length) return;
-    var rem=roomRemHour(date,h,8)+roomRemHour(date,h,6)+roomRemHour(date,h,2);
-    txt+='\n⏰ '+HOUR_LBL[i]+'  (잔여 '+rem+'/'+TOTAL_CAP+')\n';
-    bks.forEach(function(b){
-      totalPax+=(parseInt(b.pax)||1);
-      var dur=getDur(b);
-      var bedStr=b.beds&&b.beds.length?' | 🛏️'+b.beds.join(',')+'번':'';
-      txt+='  '+b.slot+'–'+toStr(toMin(b.slot)+dur)+' '+(b.room===8?'🟢4층':b.room===6?'🟣3층':'🔵바디')+' '
-        +(b.name||'이름미정')+' '+b.pax+'명'+(b.lang?' | '+b.lang:'')+(b.source?' | '+b.source:'')+bedStr+(b.program?' | '+b.program:'')+'\n';
-    });
-  });
-  var orph=ofDate(date).filter(function(b){ return !isValidSlot(b.slot)||HOURS.indexOf(hourOf(b.slot))===-1; });
-  if(orph.length){
-    txt+='\n⏰ 시간 미확인 ('+orph.length+'건 — 확인 필요)\n';
-    orph.forEach(function(b){
-      totalPax+=(parseInt(b.pax)||1);
-      var od=getDur(b);
-      var ot=isValidSlot(b.slot)?(b.slot+'–'+toStr(toMin(b.slot)+od)):'??:??';
-      var obed=b.beds&&b.beds.length?' | 🛏️'+b.beds.join(',')+'번':'';
-      txt+='  '+ot+' '+(b.room===8?'🟢4층':b.room===6?'🟣3층':'🔵바디')+' '
-        +(b.name||'이름미정')+' '+(parseInt(b.pax)||1)+'명'+(b.lang?' | '+b.lang:'')+(b.source?' | '+b.source:'')+obed+(b.program?' | '+b.program:'')+'\n';
-    });
-  }
-  txt+='\n'+'─'.repeat(22)+'\n👥 총 '+totalPax+'명';
-  return txt;
+let stopWeek = null;
+let stopWeek = null, stopMonth = null;
+function listenWeek(){
+if (typeof stopWeek === 'function') { try { stopWeek(); } catch(e){} }
+stopWeek = null;
+@@ -1109,6 +1157,14 @@
+paint();
+}, err => { console.error('[laurel] 주간 청소 구독 실패', err); });
 }
-var shareDate=null;
-function openShare(date){ shareDate=date||getTODAY(); var p=shareDate.split('-'); document.getElementById('shareTitle').textContent=p[1]+'월 '+p[2]+'일 예약 현황 공유'; document.getElementById('shareText').textContent=buildShareText(shareDate); document.getElementById('sharePopup').classList.add('open'); }
-function closeShare(){ document.getElementById('sharePopup').classList.remove('open'); }
-function copyShare(){
-  var txt=document.getElementById('shareText').textContent, btn=document.querySelector('.sb-copy');
-  if(navigator.clipboard){ navigator.clipboard.writeText(txt).catch(function(){}); }
-  else{ var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
-  btn.textContent='✅ 복사됐어요!';
-  setTimeout(function(){ btn.textContent='📋 텍스트 복사 (카카오/왓츠앱 붙여넣기)'; },2000);
+function listenMonth(){
+  if (typeof stopMonth === 'function') { try { stopMonth(); } catch(e){} }
+  stopMonth = null;
+  stopMonth = onValue(ref(db, 'staffcheck/month/' + MONKEY), snap => {
+    MONTH = snap.val() || {};
+    paint();
+  }, err => { console.error('[laurel] 월간 청소 구독 실패', err); });
 }
 
-/* ═══════════ 시간 선택 (시 → 분) ═══════════ */
-function renderTimePicker(active){
-  var date=document.getElementById('mDate').value;
-  if(active&&isValidSlot(active)){ mHour=hourOf(active); mMin=toMin(active)%60; mSlot=active; }
-  document.getElementById('timePicker').innerHTML=HOURS.map(function(h,i){
-    var rem=date?roomRemHour(date,h,8,editId)+roomRemHour(date,h,6,editId)+roomRemHour(date,h,2,editId):TOTAL_CAP;
-    var tight=rem<=0;
-    return '<div class="tpick'+(tight?' t-full':'')+(mHour===h?' active':'')+'" data-h="'+h+'" onclick="pickHour('+h+')">'
-      +'<div class="tt">'+HOUR_LBL[i]+'</div><div class="tr">'+(tight?'빽빽':'잔'+rem)+'</div></div>';
-  }).join('');
-  renderMinPicker();
-}
-function renderMinPicker(){
-  var box=document.getElementById('minPicker'), date=document.getElementById('mDate').value;
-  var pt=document.getElementById('pickedTime');
-  if(mHour===null){ box.innerHTML=''; pt.textContent=''; return; }
-  var dur=curDur();
-  box.innerHTML=MINUTES.map(function(mm){
-    var start=mHour*60+mm;
-    var over=start+dur>CLOSE_MIN;
-    var r=date?(roomRemAt(date,start,dur,8,editId)+roomRemAt(date,start,dur,6,editId)+roomRemAt(date,start,dur,2,editId)):TOTAL_CAP;
-    var warn=r<=0||over;
-    return '<div class="mpick'+(warn?' m-warn':'')+(mMin===mm?' active':'')+'" onclick="pickMin('+mm+')">:'+String(mm).padStart(2,'0')+'</div>';
-  }).join('');
-  if(mSlot){
-    var end=toMin(mSlot)+dur;
-    pt.innerHTML='선택: '+mSlot+' – '+toStr(end)+' ('+dur+'분)'+(end>CLOSE_MIN?' <span style="color:var(--yellow)">· 영업 종료 이후까지</span>':'');
-  } else { pt.textContent='분을 선택하세요'; }
-}
-function pickHour(h){
-  mHour=h; mMin=null; mSlot=null; mBeds=[];
-  document.querySelectorAll('.tpick').forEach(function(el){ el.classList.toggle('active',parseInt(el.dataset.h)===h); });
-  renderMinPicker(); checkCap(); renderBedPicker();
-}
-function pickMin(mm){
-  mMin=mm; mSlot=toStr(mHour*60+mm); mBeds=[];
-  renderMinPicker(); checkCap(); renderBedPicker();
-}
-function onDurChange(){ renderMinPicker(); checkCap(); renderBedPicker(); }
-function onProgramChange(){ renderMinPicker(); checkCap(); renderBedPicker(); }
+let stopChecks = null;
+function listenToday(){
+@@ -1150,13 +1206,16 @@
+if (k !== TODAY){ TODAY = k; CHECKS = {}; showDate(); listenToday(); }
+const m = mondayKey(new Date());
+if (m !== MONDAY){ MONDAY = m; WEEK = {}; listenWeek(); }
+  const mo = monthKey(new Date());
+  if (mo !== MONKEY){ MONKEY = mo; MONTH = {}; listenMonth(); }
+}, 60000);
 
-/* ═══════════ 모달 ═══════════ */
-function openModal(date,hour){
-  editId=null; editBase=0; mRoom=null; mSlot=null; mMin=null; mBeds=[];
-  mHour=(hour!==undefined&&hour!==null)?hour:null;
-  document.getElementById('sheetTitle').textContent='예약 추가';
-  document.getElementById('editChip').style.display='none';
-  document.getElementById('sheetFoot').innerHTML='<button class="btn-cancel" onclick="closeModal()">취소</button><button class="btn-save" onclick="saveB()">저장</button>';
-  resetForm(date||selDate||getTODAY());
-  document.getElementById('overlay').classList.add('open');
-}
-function ensureDurOption(v){
-  var sel=document.getElementById('mDur'), n=parseInt(v);
-  if(!n) return;
-  for(var i=0;i<sel.options.length;i++){ if(parseInt(sel.options[i].value)===n) return; }
-  var op=document.createElement('option');
-  op.value=String(n); op.textContent=n+'분 (기존 값)'; op.dataset.extra='1';
-  sel.appendChild(op);
-}
-function openEdit(id){
-  var b=bookings.find(function(x){return x.id===id;}); if(!b) return;
-  editId=id; editBase=b.updatedAt||0; mRoom=b.room; mSlot=b.slot; mBeds=b.beds?b.beds.slice():[];
-  mHour=isValidSlot(b.slot)?hourOf(b.slot):null; mMin=isValidSlot(b.slot)?toMin(b.slot)%60:null;
-  document.getElementById('sheetTitle').textContent='예약 수정';
-  document.getElementById('editChip').style.display='inline-flex';
-  document.getElementById('sheetFoot').innerHTML='<button class="btn-del-bk" onclick="delB(\''+id+'\',true)">삭제</button><button class="btn-cancel" onclick="closeModal()">취소</button><button class="btn-save" onclick="saveB()">저장</button>';
-  document.getElementById('mDate').value=b.date||getTODAY();
-  document.getElementById('mName').value=b.name||'';
-  document.getElementById('mLang').value=b.lang||'';
-  document.getElementById('mProgram').value=b.program||'';
-  document.getElementById('mSource').value=b.source||'';
-  document.getElementById('mNote').value=b.note||'';
-  ensureDurOption(b.dur);
-  document.getElementById('mDur').value=b.dur||'';
-  document.getElementById('sheetAlert').innerHTML='';
-  renderTimePicker(b.slot);
-  document.getElementById('rp8').className='rpick'+(b.room===8?' active':'');
-  document.getElementById('rp6').className='rpick'+(b.room===6?' active':'');
-  document.getElementById('rp2').className='rpick'+(b.room===2?' active':'');
-  var pax=document.getElementById('mPax'); pax.innerHTML='<option value="">선택</option>';
-  for(var i=1;i<=b.room;i++) pax.innerHTML+='<option value="'+i+'"'+(i===b.pax?' selected':'')+'>'+i+'명</option>';
-  checkCap(); renderBedPicker();
-  document.getElementById('overlay').classList.add('open');
-}
-function resetForm(date){
-  document.getElementById('mDate').value=date;
-  document.getElementById('mName').value=''; document.getElementById('mNote').value='';
-  document.getElementById('mPax').innerHTML='<option value="">룸 먼저 선택</option>';
-  document.getElementById('mLang').selectedIndex=0; document.getElementById('mProgram').selectedIndex=0;
-  document.getElementById('mSource').selectedIndex=0;
-  var ds=document.getElementById('mDur');
-  Array.prototype.slice.call(ds.querySelectorAll('option[data-extra]')).forEach(function(o){ o.remove(); });
-  ds.value='';
-  document.getElementById('sheetAlert').innerHTML='';
-  document.getElementById('rp8').className='rpick'; document.getElementById('rp6').className='rpick'; document.getElementById('rp2').className='rpick';
-  mBeds=[];
-  renderTimePicker(); renderBedPicker();
-}
-function closeModal(){ document.getElementById('overlay').classList.remove('open'); editId=null; editBase=0; mBeds=[]; }
-function pickRoom(n){
-  mRoom=n; mBeds=[];
-  document.getElementById('rp8').className='rpick'+(n===8?' active':'');
-  document.getElementById('rp6').className='rpick'+(n===6?' active':'');
-  document.getElementById('rp2').className='rpick'+(n===2?' active':'');
-  var pax=document.getElementById('mPax'); pax.innerHTML='<option value="">선택</option>';
-  for(var i=1;i<=n;i++) pax.innerHTML+='<option value="'+i+'">'+i+'명</option>';
-  checkCap(); renderBedPicker();
-}
-function onDateChange(){
-  var d=document.getElementById('mDate').value;
-  if(d){ selDate=d; renderCal(); }
-  mSlot=null; mMin=null; mBeds=[];
-  renderTimePicker(); checkCap(); renderBedPicker();
-}
-function checkCap(){
-  var date=document.getElementById('mDate').value, pax=parseInt(document.getElementById('mPax').value)||0;
-  var al=document.getElementById('sheetAlert');
-  if(!date||!mRoom||!mSlot||!pax){ al.innerHTML=''; return; }
-  var dur=curDur(), rem=roomRemAt(date,toMin(mSlot),dur,mRoom,editId);
-  if(rem<=0) al.innerHTML='<div class="malert a-warn">⚠️ '+zoneLabel(mRoom)+' '+mSlot+'에 이미 자리가 다 찼어요 — 그래도 저장할 수 있어요</div>';
-  else if(pax>rem) al.innerHTML='<div class="malert a-warn">⚠️ '+zoneLabel(mRoom)+' '+rem+'자리만 남아요</div>';
-  else al.innerHTML='<div class="malert a-ok">✓ 예약 가능 — 저장 후 '+(rem-pax)+'자리 남음</div>';
-  renderBedPicker();
-}
-async function saveB(){
-  var date=document.getElementById('mDate').value, pax=parseInt(document.getElementById('mPax').value)||0;
-  var al=document.getElementById('sheetAlert');
-  if(!date){ al.innerHTML='<div class="malert a-err">날짜를 선택해주세요</div>'; return; }
-  if(!mSlot){ al.innerHTML='<div class="malert a-err">시간(시·분)을 선택해주세요</div>'; return; }
-  if(!mRoom){ al.innerHTML='<div class="malert a-err">룸을 선택해주세요</div>'; return; }
-  if(!pax){ al.innerHTML='<div class="malert a-err">인원을 선택해주세요</div>'; return; }
-  var dur=curDur(), rem=roomRemAt(date,toMin(mSlot),dur,mRoom,editId);
-
-  /* I — 베드 검증 */
-  if(mBeds.some(function(n){return n<1||n>ROOM_CAP[mRoom];})){
-    al.innerHTML='<div class="malert a-err">'+zoneLabel(mRoom)+'에 없는 베드 번호가 골라져 있어요 (1~'+ROOM_CAP[mRoom]+'번)</div>'; return;
-  }
-  if(pax>ROOM_CAP[mRoom]){
-    al.innerHTML='<div class="malert a-err">'+zoneLabel(mRoom)+'은 최대 '+ROOM_CAP[mRoom]+'명까지예요</div>'; return;
-  }
-  if(mBeds.length&&mBeds.length!==pax){
-    if(!confirm('베드는 '+mBeds.length+'개 골랐는데 인원은 '+pax+'명이에요.\n그대로 저장할까요?')) return;
-  }
-  if(pax>rem){
-    if(!confirm(zoneLabel(mRoom)+' '+mSlot+' 잔여 '+rem+'자리인데 '+pax+'명이에요.\n그래도 저장할까요?')) return;
-  }
-
-  /* G — 내가 편집하는 동안 다른 기기가 같은 예약을 건드렸는지 */
-  if(editId){
-    var cur=bookings.find(function(x){return x.id===editId;});
-    if(!cur){
-      if(!confirm('이 예약이 다른 기기에서 이미 삭제됐어요.\n지금 내용으로 다시 만들까요?')) return;
-    } else if((cur.updatedAt||0)!==editBase){
-      if(!confirm('다른 기기에서 이 예약을 방금 수정했어요.\n내 화면 내용으로 덮어쓸까요?')) return;
-    }
-  }
-
-  var bk={ id:editId||newId(), date:date, slot:mSlot, dur:dur, room:mRoom, pax:pax,
-    beds:mBeds.length?mBeds:[],
-    name:document.getElementById('mName').value.trim(),
-    lang:document.getElementById('mLang').value,
-    program:document.getElementById('mProgram').value,
-    source:document.getElementById('mSource').value,
-    note:document.getElementById('mNote').value.trim(),
-    updatedAt:Date.now() };
-  try{ await saveToFirebase(bk); }
-  catch(e){ al.innerHTML='<div class="malert a-err">저장이 안 됐어요 — 인터넷 확인하고 저장을 다시 눌러주세요</div>'; return; }
-  closeModal();
-}
-async function delB(id,fromModal){
-  if(!confirm('이 예약을 삭제할까요?')) return;
-  try{ await deleteFromFirebase(id); }
-  catch(e){ alert('삭제가 안 됐어요 — 인터넷 확인하고 다시 눌러주세요'); return; }
-  if(fromModal) closeModal();
-}
-
-window.goTab=goTab; window.openModal=openModal; window.openEdit=openEdit;
-window.closeModal=closeModal; window.saveB=saveB; window.delB=delB;
-window.pickRoom=pickRoom; window.pickHour=pickHour; window.pickMin=pickMin;
-window.onDateChange=onDateChange; window.onDurChange=onDurChange; window.onProgramChange=onProgramChange;
-window.checkCap=checkCap; window.changeMonth=changeMonth; window.selectDate=selectDate;
-window.openShare=openShare; window.closeShare=closeShare; window.copyShare=copyShare;
-
-var now=new Date();
-document.getElementById('hdrDate').textContent=now.getFullYear()+'년 '+(now.getMonth()+1)+'월 '+now.getDate()+'일';
-selDate=getTODAY(); renderCal(); goTab('today');
+tagItems();
+showDate();
+paintMe();
+listenToday();
+listenWeek();
+listenMonth();
+upd();
 </script>
 </body>
-</html>
